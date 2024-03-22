@@ -16,12 +16,12 @@
   <meta name="author" content="y1Fan_">
   <meta name="keywords" content="">
   
-    <meta name="description" content="反射在java反序列化中是常用到的一个东西 反射是什么反射就是java代码在JVM虚拟机中运行时，对于任意一个类可以动态获取他的class对象、属性、方法相关的信息 举个栗子正常情况下，我们在调用某一个类的方法，是先实例化一个类对象，然后对象.方法使用，像这样 12345678910111213class Person &#123;    String name&#x3D;&quot;菜鸡&quot;;">
+    <meta name="description" content="反射在java反序列化中是常用到的一个东西 反射是什么反射就是java代码在JVM虚拟机中运行时，对于任意一个类可以动态获取他的class对象、属性、方法相关的信息 举个栗子正常情况下，我们在调用某一个类的方法，是先实例化一个类对象，然后对象.方法使用，像这样 class Person &#123;     String name&#x3D;&quot;菜鸡&quot;;     public void l">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java反序列化（一）反射">
 <meta property="og:url" content="http://example.com/2024/01/08/%E4%BA%8C%E3%80%81%E5%8F%8D%E5%B0%84/index.html">
 <meta property="og:site_name" content="y1Fan_&#39;s blog">
-<meta property="og:description" content="反射在java反序列化中是常用到的一个东西 反射是什么反射就是java代码在JVM虚拟机中运行时，对于任意一个类可以动态获取他的class对象、属性、方法相关的信息 举个栗子正常情况下，我们在调用某一个类的方法，是先实例化一个类对象，然后对象.方法使用，像这样 12345678910111213class Person &#123;    String name&#x3D;&quot;菜鸡&quot;;">
+<meta property="og:description" content="反射在java反序列化中是常用到的一个东西 反射是什么反射就是java代码在JVM虚拟机中运行时，对于任意一个类可以动态获取他的class对象、属性、方法相关的信息 举个栗子正常情况下，我们在调用某一个类的方法，是先实例化一个类对象，然后对象.方法使用，像这样 class Person &#123;     String name&#x3D;&quot;菜鸡&quot;;     public void l">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2024/01/08/%E4%BA%8C%E3%80%81%E5%8F%8D%E5%B0%84/image-20240108013058248.png">
 <meta property="og:image" content="http://example.com/2024/01/08/%E4%BA%8C%E3%80%81%E5%8F%8D%E5%B0%84/image-20240108013326833.png">
@@ -267,10 +267,35 @@
                 <p>反射在java反序列化中是常用到的一个东西</p>
 <h2 id="反射是什么"><a href="#反射是什么" class="headerlink" title="反射是什么"></a>反射是什么</h2><p>反射就是java代码在JVM虚拟机中运行时，对于任意一个<code>类</code>可以动态获取他的<code>class</code>对象、属性、方法相关的信息</p>
 <h3 id="举个栗子"><a href="#举个栗子" class="headerlink" title="举个栗子"></a>举个栗子</h3><p>正常情况下，我们在调用某一个类的方法，是先实例化一个类对象，然后<code>对象.方法</code>使用，像这样</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span> &#123;<br>    String name=<span class="hljs-string">&quot;菜鸡&quot;</span>;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">learn</span><span class="hljs-params">()</span>&#123;<br>        System.out.println(<span class="hljs-string">&quot;我是&quot;</span>+name);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReflectionLearn</span>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">Person</span> <span class="hljs-variable">p</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Person</span>();<br>        p.learn();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span> &#123;
+    String name=<span class="hljs-string">&quot;菜鸡&quot;</span>;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">learn</span><span class="hljs-params">()</span>&#123;
+        System.out.println(<span class="hljs-string">&quot;我是&quot;</span>+name);
+    &#125;
+&#125;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReflectionLearn</span>&#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;
+        <span class="hljs-type">Person</span> <span class="hljs-variable">p</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Person</span>();
+        p.learn();
+    &#125;
+&#125;</code></pre></div>
 
 <p>再利用反射调用，像这样</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span> &#123;<br>    String name=<span class="hljs-string">&quot;菜鸡&quot;</span>;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">learn</span><span class="hljs-params">()</span>&#123;<br>        System.out.println(<span class="hljs-string">&quot;我是&quot;</span>+name);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReflectionLearn</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;<br>        <span class="hljs-type">Class</span> <span class="hljs-variable">p</span> <span class="hljs-operator">=</span> Class.forName(<span class="hljs-string">&quot;Person&quot;</span>);<br>        <span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> (Person) p.newInstance();<br>        person.learn();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span> &#123;
+    String name=<span class="hljs-string">&quot;菜鸡&quot;</span>;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">learn</span><span class="hljs-params">()</span>&#123;
+        System.out.println(<span class="hljs-string">&quot;我是&quot;</span>+name);
+    &#125;
+&#125;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReflectionLearn</span> &#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;
+        <span class="hljs-type">Class</span> <span class="hljs-variable">p</span> <span class="hljs-operator">=</span> Class.forName(<span class="hljs-string">&quot;Person&quot;</span>);
+        <span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> (Person) p.newInstance();
+        person.learn();
+    &#125;
+&#125;</code></pre></div>
 
 <p>我们可以看到，这个过程是先用<code>forName</code>方法找到了一个名为Person的<code>类</code>用，然后用<code>类</code>实例化出来一个对象<code>person</code>，再调用<code>learn</code>方法。</p>
 <h3 id="反射中常用的方法"><a href="#反射中常用的方法" class="headerlink" title="反射中常用的方法"></a>反射中常用的方法</h3><p><code>forName</code>：获得一个类</p>
@@ -284,35 +309,126 @@
 <p>这个方法有两种用法，第一种就是只需要一个类名参数<code>Class.forName(&quot;Person&quot;)</code>第二种当中是三个参数，第一个还是类名，第二个布尔类型，表示是否初始化，第三个参数表示<a target="_blank" rel="noopener" href="https://blog.csdn.net/zuodaoyong/article/details/113788263">类加载器</a>，一般情况下第一种用法比较多。</p>
 <h4 id="newInstance方法"><a href="#newInstance方法" class="headerlink" title="newInstance方法"></a>newInstance方法</h4><p>class.newInstance方法的作用个就是对该类进行实例化</p>
 <p>假设现在有一个类如下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span> &#123;<br>    <span class="hljs-keyword">public</span> String name=<span class="hljs-string">&quot;李四&quot;</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> age=<span class="hljs-number">3</span>;<br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Person</span><span class="hljs-params">()</span> &#123;<br>    &#125;<br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Person</span><span class="hljs-params">(String name, <span class="hljs-type">int</span> age)</span> &#123;<br>        <span class="hljs-built_in">this</span>.name = name;<br>        <span class="hljs-built_in">this</span>.age = age;<br>    &#125;<br><br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">learn</span><span class="hljs-params">()</span>&#123;<br>        System.out.println(<span class="hljs-string">&quot;我是：&quot;</span>+name);<br>    &#125;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">age</span><span class="hljs-params">()</span>&#123;<br>        System.out.println(<span class="hljs-string">&quot;我年龄：&quot;</span>+age);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span> &#123;
+    <span class="hljs-keyword">public</span> String name=<span class="hljs-string">&quot;李四&quot;</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> age=<span class="hljs-number">3</span>;
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Person</span><span class="hljs-params">()</span> &#123;
+    &#125;
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Person</span><span class="hljs-params">(String name, <span class="hljs-type">int</span> age)</span> &#123;
+        <span class="hljs-built_in">this</span>.name = name;
+        <span class="hljs-built_in">this</span>.age = age;
+    &#125;
+
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">learn</span><span class="hljs-params">()</span>&#123;
+        System.out.println(<span class="hljs-string">&quot;我是：&quot;</span>+name);
+    &#125;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">age</span><span class="hljs-params">()</span>&#123;
+        System.out.println(<span class="hljs-string">&quot;我年龄：&quot;</span>+age);
+    &#125;
+&#125;</code></pre></div>
 
 <p>现在这样去使用</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReflectionLearn</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;<br>        Class&lt;?&gt; p = Class.forName(<span class="hljs-string">&quot;Person&quot;</span>);<br>        <span class="hljs-comment">//无参构造</span><br>        <span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> (Person) p.newInstance();<br>        Field[] personfields = p.getDeclaredFields();<br>        <span class="hljs-keyword">for</span> (Field f:personfields)&#123;<br>            System.out.println(f);<br>        &#125;<br>        person.learn();<br>        person.age();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReflectionLearn</span> &#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;
+        Class&lt;?&gt; p = Class.forName(<span class="hljs-string">&quot;Person&quot;</span>);
+        <span class="hljs-comment">//无参构造</span>
+        <span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> (Person) p.newInstance();
+        Field[] personfields = p.getDeclaredFields();
+        <span class="hljs-keyword">for</span> (Field f:personfields)&#123;
+            System.out.println(f);
+        &#125;
+        person.learn();
+        person.age();
+    &#125;
+&#125;</code></pre></div>
 
 <p>可以看到这里<code>newInstance</code>是没有参数的，并且这个方法是无参的</p>
 <p><img src="/2024/01/08/%E4%BA%8C%E3%80%81%E5%8F%8D%E5%B0%84/image-20240108160806574.png" srcset="/img/loading.gif" lazyload alt="image-20240108160806574"></p>
 <p>运行之后我们得到<code>李四</code>和<code>3</code>这两个结果，也就是实例化调用的是无参构造方法，那如何调用有参的构造方法呢？就需要用到<code>getConstructor</code>方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReflectionLearn</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;<br>        Class&lt;?&gt; p = Class.forName(<span class="hljs-string">&quot;Person&quot;</span>);<br>        <span class="hljs-comment">//无参构造</span><br>        <span class="hljs-comment">/*Person person = (Person) p.newInstance();*/</span><br>        <span class="hljs-comment">///有参构造</span><br>        Constructor&lt;?&gt; personconstructor = p.getConstructor(String.class,<span class="hljs-type">int</span>.class);<br>        <span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> (Person) personconstructor.newInstance(<span class="hljs-string">&quot;张三&quot;</span>,<span class="hljs-number">24</span>);<br>        Field[] personfields = p.getDeclaredFields();<br>        <span class="hljs-keyword">for</span> (Field f:personfields)&#123;<br>            System.out.println(f);<br>        &#125;<br>        person.learn();<br>        person.age();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReflectionLearn</span> &#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;
+        Class&lt;?&gt; p = Class.forName(<span class="hljs-string">&quot;Person&quot;</span>);
+        <span class="hljs-comment">//无参构造</span>
+        <span class="hljs-comment">/*Person person = (Person) p.newInstance();*/</span>
+        <span class="hljs-comment">///有参构造</span>
+        Constructor&lt;?&gt; personconstructor = p.getConstructor(String.class,<span class="hljs-type">int</span>.class);
+        <span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> (Person) personconstructor.newInstance(<span class="hljs-string">&quot;张三&quot;</span>,<span class="hljs-number">24</span>);
+        Field[] personfields = p.getDeclaredFields();
+        <span class="hljs-keyword">for</span> (Field f:personfields)&#123;
+            System.out.println(f);
+        &#125;
+        person.learn();
+        person.age();
+    &#125;
+&#125;</code></pre></div>
 
 <h4 id="getField方法"><a href="#getField方法" class="headerlink" title="getField方法"></a>getField方法</h4><p>这个方法可以获取<code>Class</code>对象中的成员变量</p>
 <p><img src="/2024/01/08/%E4%BA%8C%E3%80%81%E5%8F%8D%E5%B0%84/image-20240108202934325.png" srcset="/img/loading.gif" lazyload alt="image-20240108202934325"></p>
 <p>可以看到有四个相似的方法，带s就是获取多个，带Declared就是不管成员变量是public或是private都可以获取到</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReflectionLearn</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;<br>        Class&lt;?&gt; p = Class.forName(<span class="hljs-string">&quot;Person&quot;</span>);<br>        <span class="hljs-comment">//无参构造</span><br>        <span class="hljs-comment">/*Person person = (Person) p.newInstance();*/</span><br>        <span class="hljs-comment">///有参构造</span><br>        Constructor&lt;?&gt; personconstructor = p.getConstructor(String.class,<span class="hljs-type">int</span>.class);<br>        <span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> (Person) personconstructor.newInstance(<span class="hljs-string">&quot;张三&quot;</span>,<span class="hljs-number">24</span>);<br>        Field[] personfields = p.getDeclaredFields();<br>        <span class="hljs-keyword">for</span> (Field f:personfields)&#123;<br>            System.out.println(f);<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReflectionLearn</span> &#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;
+        Class&lt;?&gt; p = Class.forName(<span class="hljs-string">&quot;Person&quot;</span>);
+        <span class="hljs-comment">//无参构造</span>
+        <span class="hljs-comment">/*Person person = (Person) p.newInstance();*/</span>
+        <span class="hljs-comment">///有参构造</span>
+        Constructor&lt;?&gt; personconstructor = p.getConstructor(String.class,<span class="hljs-type">int</span>.class);
+        <span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> (Person) personconstructor.newInstance(<span class="hljs-string">&quot;张三&quot;</span>,<span class="hljs-number">24</span>);
+        Field[] personfields = p.getDeclaredFields();
+        <span class="hljs-keyword">for</span> (Field f:personfields)&#123;
+            System.out.println(f);
+        &#125;
+    &#125;
+&#125;</code></pre></div>
 
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> java.lang.String Person.name<br><span class="hljs-keyword">private</span> <span class="hljs-type">int</span> Person.age<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">public</span> java.lang.String Person.name
+<span class="hljs-keyword">private</span> <span class="hljs-type">int</span> Person.age</code></pre></div>
 
 <p>这里获取到name和age两个变量，然后下一步试图操作他，上一步<code>newInstance(&quot;张三&quot;,24)</code>实例化对象的时候<code>name</code>的值是<code>张三</code>，下面用<code>set()</code>方法去修改<code>name</code>的值为<code>王五</code>，这里set需要两个参数，第一个是一个对象，第二个顾名思义就是要改变的变量的值</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">set</span><span class="hljs-params">(Object obj, Object value)</span><br>    <span class="hljs-keyword">throws</span> IllegalArgumentException, IllegalAccessException<br>&#123;<br>    <span class="hljs-keyword">if</span> (!override) &#123;<br>        <span class="hljs-keyword">if</span> (!Reflection.quickCheckMemberAccess(clazz, modifiers)) &#123;<br>            Class&lt;?&gt; caller = Reflection.getCallerClass();<br>            checkAccess(caller, clazz, obj, modifiers);<br>        &#125;<br>    &#125;<br>    getFieldAccessor(obj).set(obj, value);<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">set</span><span class="hljs-params">(Object obj, Object value)</span>
+    <span class="hljs-keyword">throws</span> IllegalArgumentException, IllegalAccessException
+&#123;
+    <span class="hljs-keyword">if</span> (!override) &#123;
+        <span class="hljs-keyword">if</span> (!Reflection.quickCheckMemberAccess(clazz, modifiers)) &#123;
+            Class&lt;?&gt; caller = Reflection.getCallerClass();
+            checkAccess(caller, clazz, obj, modifiers);
+        &#125;
+    &#125;
+    getFieldAccessor(obj).set(obj, value);
+&#125;</code></pre></div>
 
 <p>需要思考的一个问题就是为什么传<code>person</code>而不是<code>p</code>？首先<code>p</code>是通过<code>Class.forName</code>获得的一个原型类，<code>person</code>是通过<code>p</code>实例化出来的一个对象，我们要修改的是对象的值，所以<code>set()</code>传的参数是<code>person</code>。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java">Field personname=p.getField(<span class="hljs-string">&quot;name&quot;</span>);<br>personname.set(person,<span class="hljs-string">&quot;王五&quot;</span>);<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java">Field personname=p.getField(<span class="hljs-string">&quot;name&quot;</span>);
+personname.set(person,<span class="hljs-string">&quot;王五&quot;</span>);</code></pre></div>
 
 <p>用同样的方法修改age变量的时候，发现报错了，是因为age是一个private类型，需要用<code>getDeclaredField()</code>，然后需要设置<code>setAccessible(true)</code>。</p>
 <p><img src="/2024/01/08/%E4%BA%8C%E3%80%81%E5%8F%8D%E5%B0%84/image-20240108210253009.png" srcset="/img/loading.gif" lazyload alt="image-20240108210253009"></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Field</span> <span class="hljs-variable">personage</span> <span class="hljs-operator">=</span> p.getDeclaredField(<span class="hljs-string">&quot;age&quot;</span>);<br>personage.setAccessible(<span class="hljs-literal">true</span>);<br>System.out.println(personage);<br>personage.set(person,<span class="hljs-number">666</span>);<br>person.age();<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-type">Field</span> <span class="hljs-variable">personage</span> <span class="hljs-operator">=</span> p.getDeclaredField(<span class="hljs-string">&quot;age&quot;</span>);
+personage.setAccessible(<span class="hljs-literal">true</span>);
+System.out.println(personage);
+personage.set(person,<span class="hljs-number">666</span>);
+person.age();</code></pre></div>
 
 <h4 id="getMethod方法"><a href="#getMethod方法" class="headerlink" title="getMethod方法"></a>getMethod方法</h4><p>这部分跟<code>getField</code>方法用法差不多，主要是调用成员方法的时候用到了<code>invoke</code></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReflectionLearn</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;<br>        Class&lt;?&gt; p = Class.forName(<span class="hljs-string">&quot;Person&quot;</span>);<br>        <span class="hljs-comment">//无参构造</span><br>        <span class="hljs-comment">/*Person person = (Person) p.newInstance();*/</span><br>        <span class="hljs-comment">///有参构造</span><br>        Constructor&lt;?&gt; personconstructor = p.getConstructor(String.class,<span class="hljs-type">int</span>.class);<br>        <span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> (Person) personconstructor.newInstance(<span class="hljs-string">&quot;张三&quot;</span>,<span class="hljs-number">24</span>);<br>        <span class="hljs-comment">///获取类里面的方法</span><br>        Method[] personmethods = p.getMethods();<br>        <span class="hljs-keyword">for</span> (Method m : personmethods)&#123;<br>            System.out.println(m);<br>        &#125;<br>        <span class="hljs-comment">///调用类里面的方法</span><br>        Method personlearn=p.getMethod(<span class="hljs-string">&quot;learn&quot;</span>);<br>        System.out.println(personlearn);<br>        personlearn.invoke(person);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReflectionLearn</span> &#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;
+        Class&lt;?&gt; p = Class.forName(<span class="hljs-string">&quot;Person&quot;</span>);
+        <span class="hljs-comment">//无参构造</span>
+        <span class="hljs-comment">/*Person person = (Person) p.newInstance();*/</span>
+        <span class="hljs-comment">///有参构造</span>
+        Constructor&lt;?&gt; personconstructor = p.getConstructor(String.class,<span class="hljs-type">int</span>.class);
+        <span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> (Person) personconstructor.newInstance(<span class="hljs-string">&quot;张三&quot;</span>,<span class="hljs-number">24</span>);
+        <span class="hljs-comment">///获取类里面的方法</span>
+        Method[] personmethods = p.getMethods();
+        <span class="hljs-keyword">for</span> (Method m : personmethods)&#123;
+            System.out.println(m);
+        &#125;
+        <span class="hljs-comment">///调用类里面的方法</span>
+        Method personlearn=p.getMethod(<span class="hljs-string">&quot;learn&quot;</span>);
+        System.out.println(personlearn);
+        personlearn.invoke(person);
+    &#125;
+&#125;</code></pre></div>
 
                 
               </div>
