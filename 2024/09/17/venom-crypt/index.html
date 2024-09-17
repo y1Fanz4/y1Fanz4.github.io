@@ -13,7 +13,7 @@
   
   <title>
     
-      archive_a: 2024/3 
+      venom-crypt基于原版改动 
       
       
       |
@@ -104,102 +104,161 @@
 
 
       <div class="flex-container">
-        <!-- 归档页，展示本站所有文章，按照年份降序归类，url形式：https://yoursite/archives/ -->
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
 
-<!-- last: 按年份把文章分组，当前遍历到的年份 -->
-<!-- now: 当前遍历到的文章的发布年份 -->
 
-<div class="container archives">
-  <div class="post-list">
-    
-        <!-- 后续文章的发布年份呈现 -->
-        <div class="content-title">
-          <h2>
-            <span>2024</span>
-          </h2>
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">venom-crypt基于原版改动</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2024-09-17 00:00:00
+        </span>
+        
+              <span class="post-categories">
+                <i class="iconfont icon-bookmark" title="分类"></i>
+                
+                <span class="span--category">
+                  <a href="/categories/tools/" title="tools">
+                    <b>#</b> tools
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h2 id="venom-crypt基于原版改动"><a href="#venom-crypt基于原版改动" class="headerlink" title="venom-crypt基于原版改动"></a>venom-crypt基于原版改动</h2><h3 id="原版"><a href="#原版" class="headerlink" title="原版"></a>原版</h3><ul>
+<li><p>明文传输、自定义密钥的AES-CTR加密</p>
+</li>
+<li><p>原版非加密对比加密</p>
+</li>
+<li><p>命令数据包加密后增加16字节</p>
+</li>
+</ul>
+<h3 id="修改版"><a href="#修改版" class="headerlink" title="修改版"></a>修改版</h3><ul>
+<li><p>密文传输、固定密钥00theway的AES-CTR加密</p>
+</li>
+<li><p>基于原版非加密传输数据包增加100字节</p>
+</li>
+<li><p>加密位置</p>
+</li>
+</ul>
+<p><code>myConn/aesCrypto.Encrypt()</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">aes256key</span><span class="params">()</span></span> []<span class="type">byte</span> &#123;</span><br><span class="line">	key := []<span class="type">byte</span>(<span class="string">&quot;3b762cc137d55f4dcf4fe184ccc1dc15&quot;</span>) <span class="comment">//明文：00theway</span></span><br><span class="line">	<span class="keyword">return</span> key</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(hrc *AesCrypt)</span></span> Encrypt(dst, plainText []<span class="type">byte</span>) ([]<span class="type">byte</span>, <span class="type">error</span>) &#123;</span><br><span class="line">	block, err := aes.NewCipher(aes256key())</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	dst = <span class="built_in">make</span>([]<span class="type">byte</span>, aes.BlockSize+<span class="built_in">len</span>(plainText))</span><br><span class="line">	iv := dst[:aes.BlockSize]</span><br><span class="line">	<span class="keyword">if</span> _, err := io.ReadFull(rand.Reader, iv); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	encryptStream := cipher.NewCTR(block, iv)</span><br><span class="line">	encryptStream.XORKeyStream(dst[aes.BlockSize:], plainText)</span><br><span class="line">	<span class="keyword">return</span> dst, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">(admin node) &gt;&gt;&gt; help</span><br><span class="line"></span><br><span class="line">  help                                     Help information.</span><br><span class="line">  exit                                     Exit.</span><br><span class="line">  show                                     Display network topology.</span><br><span class="line">  getdes                                   View description of the target node.</span><br><span class="line">  setdes     [info]                        Add a description to the target node.</span><br><span class="line">  goto       [id]                          Select id as the target node.</span><br><span class="line">  listen     [lport]                       Listen on a port on the target node.</span><br><span class="line">  connect    [rhost] [rport]               Connect to a new node through the target node.</span><br><span class="line">  sshconnect [user@ip:port] [dport]        Connect to a new node through ssh tunnel.</span><br><span class="line">  shell                                    Start an interactive shell on the target node.</span><br><span class="line">  upload     [local_file]  [remote_file]   Upload files to the target node.</span><br><span class="line">  download   [remote_file]  [local_file]   Download files from the target node.</span><br><span class="line">  socks      [lport]                       Start a socks5 server.</span><br><span class="line">  lforward   [lhost] [sport] [dport]       Forward a local sport to a remote dport.</span><br><span class="line">  rforward   [rhost] [sport] [dport]       Forward a remote sport to a local dport.</span><br></pre></td></tr></table></figure>
+
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2024/08/28/%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2024-09-17 00:00:00
+            </span>
+            
+                  <span class="post-categories">
+                    <i class="iconfont icon-bookmark" title="分类"></i>
+                    
+                    <span class="span--category">
+                      <a href="/categories/tools/" title="tools">
+                        <b>#</b> tools
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
         </div>
       
-      <div class="post-item" title="venom-crypt基于原版改动">
-        <div class="time-m-d">09-17</div>
-        <div class="title">
-          <a href="/2024/09/17/venom-crypt/">
-            <span>venom-crypt基于原版改动</span>
-          </a>
-        </div>
-      </div>
+    </div>
     
-      <div class="post-item" title="隧道技术学习">
-        <div class="time-m-d">08-28</div>
-        <div class="title">
-          <a href="/2024/08/28/%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/">
-            <span>隧道技术学习</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="Java反序列化（CommonsCollections6）">
-        <div class="time-m-d">03-27</div>
-        <div class="title">
-          <a href="/2024/03/27/commons-collections6/">
-            <span>Java反序列化（CommonsCollections6）</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="Java反序列化（CommonsCollections1）">
-        <div class="time-m-d">03-22</div>
-        <div class="title">
-          <a href="/2024/03/22/commons-collections1/">
-            <span>Java反序列化（CommonsCollections1）</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="Java反序列化（URLDNS）">
-        <div class="time-m-d">03-15</div>
-        <div class="title">
-          <a href="/2024/03/15/urldns/">
-            <span>Java反序列化（URLDNS）</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="Java反序列化（一）反射">
-        <div class="time-m-d">01-08</div>
-        <div class="title">
-          <a href="/2024/01/08/%E4%BA%8C%E3%80%81%E5%8F%8D%E5%B0%84/">
-            <span>Java反序列化（一）反射</span>
-          </a>
-        </div>
-      </div>
-    
-        <!-- 后续文章的发布年份呈现 -->
-        <div class="content-title">
-          <h2>
-            <span>2023</span>
-          </h2>
-        </div>
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
       
-      <div class="post-item" title="PolarCTF 2023冬季挑战赛">
-        <div class="time-m-d">12-09</div>
-        <div class="title">
-          <a href="/2023/12/09/PolarD&N%20ctf-wp/">
-            <span>PolarCTF 2023冬季挑战赛</span>
-          </a>
-        </div>
-      </div>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#venom-crypt%E5%9F%BA%E4%BA%8E%E5%8E%9F%E7%89%88%E6%94%B9%E5%8A%A8"><span class="toc-text">venom-crypt基于原版改动</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%89%88"><span class="toc-text">原版</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E7%89%88"><span class="toc-text">修改版</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD"><span class="toc-text">功能</span></a></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
     
-      <div class="post-item" title="记录一个反序列化中利用代码逻辑绕过__wakeup()函数的方法">
-        <div class="time-m-d">11-30</div>
-        <div class="title">
-          <a href="/2023/11/30/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BB%A3%E7%A0%81%E9%80%BB%E8%BE%91%E7%BB%95%E8%BF%87__wakeup()%E5%87%BD%E6%95%B0/">
-            <span>记录一个反序列化中利用代码逻辑绕过__wakeup()函数的方法</span>
-          </a>
-        </div>
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
       </div>
     
   </div>
-</div>
+
 
         
 <div class="footer">
