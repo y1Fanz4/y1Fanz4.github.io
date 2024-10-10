@@ -5,7 +5,7 @@ var html = document.documentElement
 
 const switchMode = () => {
     let attr = html.getAttribute('color-mode')
-    let colorMode = 'dark'
+    let colorMode = 'light'
     if (attr === 'light') {
         html.setAttribute('color-mode', 'dark')
         themeIcon.classList = 'iconfont icon-sun'
