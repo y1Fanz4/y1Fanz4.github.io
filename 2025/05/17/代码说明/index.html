@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="hi-story" />
+  <!-- Open Graph Description 简短摘要-->
+  
+  <!-- 用于搜索引擎的文章摘要 -->
+  
+  <meta name="description" content="the way, the truth, the life" />
+  
+  
+  
+  <title>
+    
+      基于CodeBERT-LSTM大模型攻击检测Demo 
+      
+      
+      |
+    
+     hi-story&#39;s blog
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+    
+<link rel="stylesheet" href="/css/figcaption/mac-block.css">
+
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">hi-story</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          <a href="/categories/">Categories</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">基于CodeBERT-LSTM大模型攻击检测Demo</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2025-05-17 00:00:00
+        </span>
+        
+              <span class="post-categories">
+                <i class="iconfont icon-bookmark" title="分类"></i>
+                
+                <span class="span--category">
+                  <a href="/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" title="大模型">
+                    <b>#</b> 大模型
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h1 id="基于CodeBERT大模型的HTTP攻击检测Demo"><a href="#基于CodeBERT大模型的HTTP攻击检测Demo" class="headerlink" title="基于CodeBERT大模型的HTTP攻击检测Demo"></a>基于CodeBERT大模型的HTTP攻击检测Demo</h1><h2 id="一、模型训练部分"><a href="#一、模型训练部分" class="headerlink" title="一、模型训练部分"></a>一、模型训练部分</h2><h3 id="硬件环境"><a href="#硬件环境" class="headerlink" title="硬件环境"></a>硬件环境</h3><p>GPU：A100 40G</p>
+<p>CPU：Intel(R) Xeon(R) Gold 5218</p>
+<p>MEM：128G</p>
+<p>System：Ubuntu 20.04.6 LTS</p>
+<h3 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h3><p><img src="/2025/05/17/%E4%BB%A3%E7%A0%81%E8%AF%B4%E6%98%8E/image-20250503175948181.png" alt="image-20250503175948181"></p>
+<p>数据格式：{pattern,type}</p>
+<p>Type：valid、cmdi、sqli、path-traversal、xss</p>
+<h3 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h3><h4 id="加载预训练模型，初始化tokenizer"><a href="#加载预训练模型，初始化tokenizer" class="headerlink" title="加载预训练模型，初始化tokenizer"></a>加载预训练模型，初始化tokenizer</h4><p>序列化处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 初始化 tokenizer</span></span><br><span class="line">codebert_model = <span class="string">&quot;microsoft/codebert-base&quot;</span></span><br><span class="line">tokenizer = AutoTokenizer.from_pretrained(codebert_model)</span><br></pre></td></tr></table></figure>
+
+<h4 id="读取数据、定义类别映射、划分数据集"><a href="#读取数据、定义类别映射、划分数据集" class="headerlink" title="读取数据、定义类别映射、划分数据集"></a>读取数据、定义类别映射、划分数据集</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 读取数据</span></span><br><span class="line">df = pd.read_csv(<span class="string">&quot;data.csv&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义类别映射（确保所有 type 有对应索引）</span></span><br><span class="line">label_map = &#123;label: idx <span class="keyword">for</span> idx, label <span class="keyword">in</span> <span class="built_in">enumerate</span>(df[<span class="string">&quot;type&quot;</span>].unique())&#125;</span><br><span class="line">num_classes = <span class="built_in">len</span>(label_map)</span><br><span class="line">df[<span class="string">&quot;label&quot;</span>] = df[<span class="string">&quot;type&quot;</span>].<span class="built_in">map</span>(label_map)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 划分训练集和测试集</span></span><br><span class="line">train_texts, test_texts, train_labels, test_labels = train_test_split(</span><br><span class="line">    df[<span class="string">&quot;pattern&quot;</span>].astype(<span class="built_in">str</span>).tolist(), df[<span class="string">&quot;label&quot;</span>].tolist(), test_size=<span class="number">0.2</span>, random_state=<span class="number">42</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h4 id="定义数据集类"><a href="#定义数据集类" class="headerlink" title="定义数据集类"></a>定义数据集类</h4><p>自定义数据的读取和预处理逻辑</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">WebAttackDataset</span>(<span class="title class_ inherited__">Dataset</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, texts, labels, tokenizer, max_length=<span class="number">128</span></span>):</span><br><span class="line">        self.texts = texts</span><br><span class="line">        self.labels = labels</span><br><span class="line">        self.tokenizer = tokenizer</span><br><span class="line">        self.max_length = max_length</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(self.texts)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, idx</span>):</span><br><span class="line">        encoding = self.tokenizer(</span><br><span class="line">            self.texts[idx],</span><br><span class="line">            padding=<span class="string">&quot;max_length&quot;</span>,</span><br><span class="line">            truncation=<span class="literal">True</span>,</span><br><span class="line">            max_length=self.max_length,</span><br><span class="line">            return_tensors=<span class="string">&quot;pt&quot;</span></span><br><span class="line">        )</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&quot;input_ids&quot;</span>: encoding[<span class="string">&quot;input_ids&quot;</span>].squeeze(<span class="number">0</span>),</span><br><span class="line">            <span class="string">&quot;attention_mask&quot;</span>: encoding[<span class="string">&quot;attention_mask&quot;</span>].squeeze(<span class="number">0</span>),</span><br><span class="line">            <span class="string">&quot;label&quot;</span>: torch.tensor(self.labels[idx], dtype=torch.long)</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p>1、<code>__init__</code>初始化数据集对象，保存传入的参数，包括：</p>
+<ul>
+<li><code>texts</code>：原始文本数据列表</li>
+<li><code>labels</code>：对应的标签列表</li>
+<li><code>tokenizer</code>：用于将文本转换为模型输入格式的 tokenizer</li>
+<li><code>max_length</code>：设定 tokenizer 输出的最大长度，默认是 128（过长会截断，过短会填充）</li>
+</ul>
+<p>2、<code>__len__</code>返回数据集的总长度。PyTorch 会用它来判断 dataset 中有多少个样本，供 <code>DataLoader</code> 使用。</p>
+<p>3、<code>__getitem__</code>用于根据索引 <code>idx</code> 获取单个样本，并将其转为模型可识别的格式。具体处理如下：</p>
+<ul>
+<li>使用 <code>tokenizer</code> 对 <code>self.texts[idx]</code> 进行编码，转换成：<ul>
+<li><code>input_ids</code>：词语在词表中的索引序列</li>
+<li><code>attention_mask</code>：表示哪些位置是填充（pad）0，哪些是有效的1</li>
+<li><code>padding=&quot;max_length&quot;</code>：填充到 <code>max_length</code></li>
+<li><code>truncation=True</code>：超出部分将被截断</li>
+<li><code>return_tensors=&quot;pt&quot;</code>：返回 PyTorch tensor 格式（默认返回 Python 字典）</li>
+</ul>
+</li>
+<li><code>squeeze(0)</code>：去掉 batch 维度（原始为 <code>[1, max_length]</code>，去掉变为 <code>[max_length]</code>）</li>
+<li>返回一个字典，包括：<ul>
+<li><code>input_ids</code>：词索引</li>
+<li><code>attention_mask</code>：注意力掩码</li>
+<li><code>label</code>：该样本对应的分类标签，转换为 PyTorch 的 <code>LongTensor</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="创建数据加载器"><a href="#创建数据加载器" class="headerlink" title="创建数据加载器"></a>创建数据加载器</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">train_dataset = WebAttackDataset(train_texts, train_labels, tokenizer)</span><br><span class="line">test_dataset = WebAttackDataset(test_texts, test_labels, tokenizer)</span><br><span class="line">train_loader = DataLoader(train_dataset, batch_size=<span class="number">256</span>, shuffle=<span class="literal">True</span>)</span><br><span class="line">test_loader = DataLoader(test_dataset, batch_size=<span class="number">256</span>, shuffle=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="定义CodeBERT-LSTM模型"><a href="#定义CodeBERT-LSTM模型" class="headerlink" title="定义CodeBERT-LSTM模型"></a>定义CodeBERT-LSTM模型</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">CodeBERTLSTM</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num_classes, hidden_size=<span class="number">768</span>, lstm_hidden=<span class="number">512</span>, num_layers=<span class="number">2</span></span>):</span><br><span class="line">        <span class="built_in">super</span>(CodeBERTLSTM, self).__init__()</span><br><span class="line">        self.codebert = AutoModel.from_pretrained(codebert_model)</span><br><span class="line">        self.lstm = nn.LSTM(hidden_size, lstm_hidden, num_layers, batch_first=<span class="literal">True</span>, bidirectional=<span class="literal">True</span>)</span><br><span class="line">        self.fc = nn.Linear(lstm_hidden * <span class="number">2</span>, num_classes)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, input_ids, attention_mask</span>):</span><br><span class="line">        <span class="keyword">with</span> torch.no_grad():  <span class="comment"># 冻结 CodeBERT</span></span><br><span class="line">            outputs = self.codebert(input_ids=input_ids, attention_mask=attention_mask)</span><br><span class="line">        hidden_states = outputs.last_hidden_state</span><br><span class="line">        lstm_out, _ = self.lstm(hidden_states)</span><br><span class="line">        lstm_out = lstm_out[:, -<span class="number">1</span>, :]</span><br><span class="line">        logits = self.fc(lstm_out)</span><br><span class="line">        <span class="keyword">return</span> logits</span><br></pre></td></tr></table></figure>
+
+<p>1、<code>__init__</code>方法</p>
+<p>传入参数：</p>
+<ul>
+<li><code>num_classes</code>：分类的类别数，比如二分类就是 2。</li>
+<li><code>hidden_size</code>：CodeBERT 输出的隐藏层维度，CodeBERT 默认是 768。</li>
+<li><code>lstm_hidden</code>：LSTM 层的隐藏状态维度，定义提取特征的能力。</li>
+<li><code>num_layers</code>：LSTM 的层数，默认是 2。</li>
+</ul>
+<p>初始化：</p>
+<ul>
+<li><p>加载一个已经预训练好的 CodeBERT 模型。</p>
+</li>
+<li><p>定义一个 <strong>双向 LSTM 层</strong>，输入维度为 CodeBERT 的输出维度 <code>768</code>。</p>
+</li>
+<li><p>输出的维度是 <code>lstm_hidden * 2</code>，因为是双向。</p>
+</li>
+<li><p>一个全连接层，用于将 LSTM 输出映射到分类标签空间。</p>
+</li>
+</ul>
+<p>2、<code>forward</code>方法</p>
+<p>输入：</p>
+<ul>
+<li><code>input_ids</code>：来自 tokenizer 的编码（词索引序列）</li>
+<li><code>attention_mask</code>：用于掩盖 padding 的位置</li>
+</ul>
+<p>冻结CodeBERT：</p>
+<ul>
+<li>使用 <code>torch.no_grad()</code> 表示不对 CodeBERT 进行梯度计算，即<strong>冻结 CodeBERT 参数</strong>，加速训练、减少内存占用。</li>
+<li>获取其输出：<code>outputs.last_hidden_state</code> 是形如 <code>[batch_size, seq_len, hidden_size]</code> 的张量。</li>
+</ul>
+<p>LSTM编码：</p>
+<ul>
+<li><p>将 CodeBERT 输出的上下文编码送入 LSTM，进一步提取序列的时序信息。</p>
+</li>
+<li><p>取出每个样本序列最后一个时间步的隐藏状态，形状为 <code>[batch_size, lstm_hidden*2]</code>。</p>
+</li>
+</ul>
+<p>分类：</p>
+<ul>
+<li>将提取出的序列特征送入全连接层，输出为 <code>[batch_size, num_classes]</code>，即最终的分类结果。</li>
+</ul>
+<h4 id="初始化模型-定义损失函数和优化器"><a href="#初始化模型-定义损失函数和优化器" class="headerlink" title="初始化模型&amp;定义损失函数和优化器"></a>初始化模型&amp;定义损失函数和优化器</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 初始化模型</span></span><br><span class="line">model = CodeBERTLSTM(num_classes=num_classes).to(device)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义损失函数和优化器</span></span><br><span class="line">criterion = nn.CrossEntropyLoss()</span><br><span class="line">optimizer = optim.Adam(model.parameters(), lr=<span class="number">8e-5</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>创建一个 <code>CodeBERTLSTM</code> 模型实例，设置分类类别数为 <code>num_classes</code>。</p>
+</li>
+<li><p><code>to(device)</code>：将模型移动到指定的设备上运行（如 GPU 或 CPU）。</p>
+</li>
+<li><p>使用交叉熵损失（CrossEntropyLoss）作为分类任务的损失函数，适用于<strong>多类分类问题</strong>。</p>
+</li>
+<li><p>它会自动结合 <code>LogSoftmax</code> 和 <code>NLLLoss</code>。</p>
+</li>
+<li><p>使用 Adam 优化器更新模型参数，适合大多数深度学习任务。</p>
+</li>
+<li><p>学习率设为 <code>8e-5</code>，这个值对 transformer 类模型来说比较常见（默认 <code>1e-3</code> 可能太大）。</p>
+</li>
+</ul>
+<h4 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h4><p>设置训练论述和模式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">num_epochs = <span class="number">10</span></span><br><span class="line">model.train()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>num_epochs = 10</code>：训练总轮数为 10。</li>
+<li><code>model.train()</code>：将模型设置为<strong>训练模式</strong>，使得如 <code>Dropout</code>、<code>BatchNorm</code> 等层的行为与评估模式不同。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for epoch in range(num_epochs):</span><br><span class="line">    total_loss = 0</span><br><span class="line">    correct = 0</span><br><span class="line">    total = 0</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>每轮初始化统计变量：<br>total_loss：记录累计损失</p>
+</li>
+<li><p>correct：记录预测正确的数量</p>
+</li>
+<li><p>total：记录总样本数（用于计算准确率）</p>
+</li>
+</ul>
+<p>遍历训练集的每个batch</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> batch <span class="keyword">in</span> tqdm(train_loader, desc=<span class="string">f&quot;Epoch <span class="subst">&#123;epoch + <span class="number">1</span>&#125;</span>/<span class="subst">&#123;num_epochs&#125;</span>&quot;</span>):</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用 <code>tqdm</code> 进度条包装器，可以实时查看训练进度。</li>
+<li>遍历的是 <code>train_loader</code> 中的每一个 batch。</li>
+</ul>
+<p>准备batch数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">input_ids = batch[<span class="string">&quot;input_ids&quot;</span>].to(device)</span><br><span class="line">attention_mask = batch[<span class="string">&quot;attention_mask&quot;</span>].to(device)</span><br><span class="line">labels = batch[<span class="string">&quot;label&quot;</span>].to(device)</span><br></pre></td></tr></table></figure>
+
+<p>训练过程：前向+反向+参数更新</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">optimizer.zero_grad()</span><br><span class="line">outputs = model(input_ids, attention_mask)</span><br><span class="line">loss = criterion(outputs, labels)</span><br><span class="line">loss.backward()</span><br><span class="line">optimizer.step()</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><strong>梯度清零</strong>：<code>optimizer.zero_grad()</code> 避免累积上一个 batch 的梯度。</li>
+<li><strong>前向传播</strong>：调用 <code>model(...)</code> 得到 logits。</li>
+<li><strong>计算损失</strong>：将预测结果和真实标签送入 <code>CrossEntropyLoss</code>。</li>
+<li><strong>反向传播</strong>：<code>loss.backward()</code> 计算梯度。</li>
+<li><strong>更新参数</strong>：<code>optimizer.step()</code> 根据梯度更新模型权重。</li>
+</ol>
+<p>模型评估</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">total_loss += loss.item()</span><br><span class="line">preds = torch.argmax(outputs, dim=<span class="number">1</span>)</span><br><span class="line">correct += (preds == labels).<span class="built_in">sum</span>().item()</span><br><span class="line">total += labels.size(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>loss.item()</code>：提取标量损失值用于统计。</li>
+<li><code>torch.argmax(outputs, dim=1)</code>：获取模型预测类别。</li>
+<li>对比预测和真实标签，统计正确个数和总样本数，用于后续计算准确率。</li>
+</ul>
+<p>打印每一轮次训练结果</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Epoch <span class="subst">&#123;epoch + <span class="number">1</span>&#125;</span>: Loss = <span class="subst">&#123;total_loss / <span class="built_in">len</span>(train_loader):<span class="number">.4</span>f&#125;</span>, Accuracy = <span class="subst">&#123;correct / total:<span class="number">.4</span>f&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>显示当前 epoch 的平均损失和准确率。</li>
+</ul>
+<h4 id="测试集评估"><a href="#测试集评估" class="headerlink" title="测试集评估"></a>测试集评估</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">model.<span class="built_in">eval</span>()</span><br><span class="line"></span><br><span class="line">correct = <span class="number">0</span></span><br><span class="line">total = <span class="number">0</span></span><br><span class="line"><span class="keyword">with</span> torch.no_grad():</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>将模型设置为<strong>评估模式</strong>，用于关闭 dropout、batchnorm 等训练特有的行为，使得结果更稳定。</li>
+<li>初始化评估时使用的正确预测数和总样本数。</li>
+<li><code>torch.no_grad()</code> 是一个上下文管理器：在其内部禁用梯度计算，节省内存和计算资源。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> batch <span class="keyword">in</span> tqdm(test_loader, desc=<span class="string">&quot;Evaluating&quot;</span>):</span><br><span class="line">    input_ids = batch[<span class="string">&quot;input_ids&quot;</span>].to(device)</span><br><span class="line">    attention_mask = batch[<span class="string">&quot;attention_mask&quot;</span>].to(device)</span><br><span class="line">    labels = batch[<span class="string">&quot;label&quot;</span>].to(device)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>遍历测试集，每次取一个 batch，移动到 GPU 或 CPU 上。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">outputs = model(input_ids, attention_mask)</span><br><span class="line">preds = torch.argmax(outputs, dim=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取模型对每个输入样本的预测输出（logits）。</li>
+<li>使用 <code>argmax</code> 得到每个样本的预测类别。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">correct += (preds == labels).<span class="built_in">sum</span>().item()</span><br><span class="line">total += labels.size(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>累加预测正确的数量和样本总数。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Test Accuracy: <span class="subst">&#123;correct / total:<span class="number">.4</span>f&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出测试集的准确率，保留四位小数。</li>
+</ul>
+<h4 id="保存模型"><a href="#保存模型" class="headerlink" title="保存模型"></a>保存模型</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">torch.save(model.state_dict(), <span class="string">&quot;codebert_lstm_model.pth&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;模型已保存至 codebert_lstm_model.pth&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>保存模型的参数（权重），不包括模型结构。</li>
+<li>文件名为 <code>&quot;codebert_lstm_model.pth&quot;</code>，你可以稍后加载用于推理或微调。</li>
+<li>打印提示，确认模型已保存。</li>
+</ul>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2024/10/16/%E8%B5%84%E6%96%99%E5%88%86%E6%9E%90tips/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2025-05-17 00:00:00
+            </span>
+            
+                  <span class="post-categories">
+                    <i class="iconfont icon-bookmark" title="分类"></i>
+                    
+                    <span class="span--category">
+                      <a href="/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" title="大模型">
+                        <b>#</b> 大模型
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8ECodeBERT%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84HTTP%E6%94%BB%E5%87%BB%E6%A3%80%E6%B5%8BDemo"><span class="toc-text">基于CodeBERT大模型的HTTP攻击检测Demo</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E9%83%A8%E5%88%86"><span class="toc-text">一、模型训练部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6%E7%8E%AF%E5%A2%83"><span class="toc-text">硬件环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text">数据集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83"><span class="toc-text">模型训练</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A0%E8%BD%BD%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%EF%BC%8C%E5%88%9D%E5%A7%8B%E5%8C%96tokenizer"><span class="toc-text">加载预训练模型，初始化tokenizer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE%E3%80%81%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%88%AB%E6%98%A0%E5%B0%84%E3%80%81%E5%88%92%E5%88%86%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text">读取数据、定义类别映射、划分数据集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E9%9B%86%E7%B1%BB"><span class="toc-text">定义数据集类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="toc-text">创建数据加载器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89CodeBERT-LSTM%E6%A8%A1%E5%9E%8B"><span class="toc-text">定义CodeBERT-LSTM模型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A8%A1%E5%9E%8B-%E5%AE%9A%E4%B9%89%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%92%8C%E4%BC%98%E5%8C%96%E5%99%A8"><span class="toc-text">初始化模型&amp;定义损失函数和优化器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%AD%E7%BB%83"><span class="toc-text">训练</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E9%9B%86%E8%AF%84%E4%BC%B0"><span class="toc-text">测试集评估</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%9D%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-text">保存模型</span></a></li></ol></li></ol></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://y1fan.top">Copyright © 2025 hi-story</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Thanks to Oranges</a>
+        
+    </div>
+  
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+
+      </div>
+    </div>
+  </body>
+</html>
