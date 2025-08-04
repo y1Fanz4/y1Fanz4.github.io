@@ -15,7 +15,7 @@
   
   <title>
     
-      Category 
+      红日靶场2 
       
       
       |
@@ -146,19 +146,195 @@
 
 
   
-  <!-- 分类页 url形式：https://yoursite/categories/ -->
-  <div class="container category-index">
-    <div>
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/CommonsCollections/">CommonsCollections</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%86%85%E7%BD%91/">内网</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tools/">tools</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B/">大模型</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B5%84%E6%96%99%E5%88%86%E6%9E%90/">资料分析</a><span class="category-list-count">1</span></li></ul>
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">红日靶场2</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2025-08-04 00:00:00
+        </span>
+        
+              <span class="post-categories">
+                <i class="iconfont icon-bookmark" title="分类"></i>
+                
+                <span class="span--category">
+                  <a href="/categories/%E5%86%85%E7%BD%91/" title="内网">
+                    <b>#</b> 内网
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h1 id="红日靶场2记录"><a href="#红日靶场2记录" class="headerlink" title="红日靶场2记录"></a>红日靶场2记录</h1><h2 id="环境说明"><a href="#环境说明" class="headerlink" title="环境说明"></a>环境说明</h2><p><strong>域控</strong></p>
+<p>10.10.10.10</p>
+<p><strong>域内PC</strong></p>
+<p>10.10.10.201</p>
+<p><strong>Web服务器</strong></p>
+<p>192.168.5.80</p>
+<h2 id="外网渗透"><a href="#外网渗透" class="headerlink" title="外网渗透"></a>外网渗透</h2><p>对ip进行扫描</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250509125629197.png" alt="image-20250509125629197"></p>
+<p>发现目标主机7001端口有WebLogic服务，访问该服务<a target="_blank" rel="noopener" href="http://192.168.5.80:7001//console/login/LoginForm.jsp">http://192.168.5.80:7001//console/login/LoginForm.jsp</a></p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250509130921699.png" alt="image-20250509130921699"></p>
+<p>用Weblogic漏扫工具扫</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250509131042327.png" alt="image-20250509131042327"></p>
+<p>存在CVE_2017_10271_ECHO漏洞，利用该漏洞获取权限</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250509221642325.png" alt="image-20250509221642325"></p>
+<p>上线cs</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512111258799.png" alt="image-20250512111258799"></p>
+<h2 id="内网信息收集"><a href="#内网信息收集" class="headerlink" title="内网信息收集"></a>内网信息收集</h2><p>网段信息收集 <code>ipconfig /all</code></p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512110533378.png" alt="image-20250512110533378"></p>
+<p>看到域<code>de1ay.com</code>存在<code>10.10.10.80/24</code>网段，用net user &#x2F;domain</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512111445434.png" alt="image-20250512111445434"></p>
+<p>因为运行Weblogic的权限是Administrator，所以通过这里上线的cs也是管理员权限，为了获得域的信息，需要登录域账户进行收集。</p>
+<p>这里可以考虑获取账号密码的方式</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512112031486.png" alt="image-20250512112031486"></p>
+<p>然后用mssql用户上线</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512112003104.png" alt="image-20250512112003104"></p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512112214001.png" alt="image-20250512112214001"></p>
+<p>然后就收集域内信息：域管理员用户、域内主机、域控</p>
+<p>域管理员用户<code>net group &quot;domain admins&quot; /domain</code></p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512112511309.png" alt="image-20250512112511309"></p>
+<p>域内主机<code>net group &quot;domain computers&quot; /domain</code></p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512113003647.png" alt="image-20250512113003647"></p>
+<p>域控<code>net group &quot;domain controllers&quot; /domain</code></p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512113055487.png" alt="image-20250512113055487"></p>
+<p>这里也可以用cs上的插件直接获取信息</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512113225241.png" alt="image-20250512113225241"></p>
+<p>得到域内信息以后，定位域控</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512113345218.png" alt="image-20250512113345218"></p>
+<p>然后对内网进行扫描，📌📌📌(做个标记，最后再讨论)</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512184243875.png" alt="image-20250512184243875"></p>
+<h2 id="横向移动"><a href="#横向移动" class="headerlink" title="横向移动"></a>横向移动</h2><p>对内网<code>10.10.10.0/24</code>进行端口探测</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">portscan 10.10.10.0/24</span><br></pre></td></tr></table></figure>
+
+<p>结果中关键信息，开放了445端口，可以利用SMB服务可以通过明文或hash传递来远程执行</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804215826248.png" alt="image-20250804215826248"></p>
+<p>下一步就是获取密码，在system权限上的会话中用mimikatz</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804220801813.png" alt="image-20250804220801813"></p>
+<p>在目标列表中对<code>DC</code>进行横向移动</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804220841117.png" alt="image-20250804220841117"></p>
+<p>先建立一个SMB的监听器</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804220918249.png" alt="image-20250804220918249"></p>
+<p>然后用域用户的session进行横移，当然如果用system权限横移结果也是system权限</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804221023789-4316624.png" alt="image-20250804221023789"></p>
+<p>这里在web机器上用system探测内网的ip，找PC</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804223935474.png" alt="image-20250804223935474"></p>
+<p>同样对PC进行SMB横移</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804224237865.png" alt="image-20250804224237865"></p>
+<p>这样就都完成了</p>
+<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804224640411.png" alt="image-20250804224640411"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个靶场当中利用了<code>SMB服务</code>进行横移，利用的条件就是目标开放了<code>SMB服务</code>，并且已经获取到了<code>用户名</code>和密码，利用工具有：</p>
+<ol>
+<li><p>psexec</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PsExec64.exe \\<span class="number">192</span>.<span class="number">168</span>.<span class="number">52</span>.<span class="number">136</span> -u &lt;username&gt; -p &lt;password&gt; -s <span class="built_in">cmd</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>smbexec</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python smbexec.py ./:@<span class="number">192</span>.<span class="number">168</span>.<span class="number">52</span>.<span class="number">136</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2025/06/07/wp/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2025-08-04 00:00:00
+            </span>
+            
+                  <span class="post-categories">
+                    <i class="iconfont icon-bookmark" title="分类"></i>
+                    
+                    <span class="span--category">
+                      <a href="/categories/%E5%86%85%E7%BD%91/" title="内网">
+                        <b>#</b> 内网
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2%E8%AE%B0%E5%BD%95"><span class="toc-text">红日靶场2记录</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E8%AF%B4%E6%98%8E"><span class="toc-text">环境说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E7%BD%91%E6%B8%97%E9%80%8F"><span class="toc-text">外网渗透</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E7%BD%91%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">内网信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8"><span class="toc-text">横向移动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol>
+      
     </div>
   </div>
-  
 
   
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
 
   
-
+    <script async type="text/javascript" src="/plugins/valine.min.js" onload="loadValineSuc(this)"></script>
   
+
+  <div id="vcomments"></div>
+
+  <script>
+    function loadValineSuc() {
+      new Valine({
+        el: '#vcomments',
+        appId: 'fMfTvLYGl6PtxVMVJ1N8NwyS-gzGzoHsz',
+        appKey: '8itevhKQrVt7s9KkIPxfXJpF',
+        placeholder: 'Welcome!',
+        avatar: 'retro',
+        lang: 'zh-CN'
+      })
+    }
+  </script>
+
+    <style>
+      .comments-container .v .vempty {
+        display: none!important;
+      }
+    </style>
+
+
+
+
+      </div>
+    
+  </div>
+
 
         
 <div class="footer">
