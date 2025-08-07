@@ -15,7 +15,7 @@
   
   <title>
     
-      红日靶场2 
+      域认证协议Kerberos 
       
       
       |
@@ -155,11 +155,11 @@
   <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
   <div class="container post-details" id="post-details">
     <div class="post-content">
-      <div class="post-title">红日靶场2</div>
+      <div class="post-title">域认证协议Kerberos</div>
       <div class="post-attach">
         <span class="post-pubtime">
           <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-          2025-08-04 00:00:00
+          2025-08-08 00:00:00
         </span>
         
               <span class="post-categories">
@@ -175,79 +175,51 @@
           
       </div>
       <div class="markdown-body">
-        <h1 id="红日靶场2记录"><a href="#红日靶场2记录" class="headerlink" title="红日靶场2记录"></a>红日靶场2记录</h1><h2 id="环境说明"><a href="#环境说明" class="headerlink" title="环境说明"></a>环境说明</h2><p><strong>域控</strong></p>
-<p>10.10.10.10</p>
-<p><strong>域内PC</strong></p>
-<p>10.10.10.201</p>
-<p><strong>Web服务器</strong></p>
-<p>192.168.5.80</p>
-<h2 id="外网渗透"><a href="#外网渗透" class="headerlink" title="外网渗透"></a>外网渗透</h2><p>对ip进行扫描</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250509125629197.png" alt="image-20250509125629197"></p>
-<p>发现目标主机7001端口有WebLogic服务，访问该服务<a target="_blank" rel="noopener" href="http://192.168.5.80:7001//console/login/LoginForm.jsp">http://192.168.5.80:7001//console/login/LoginForm.jsp</a></p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250509130921699.png" alt="image-20250509130921699"></p>
-<p>用Weblogic漏扫工具扫</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250509131042327.png" alt="image-20250509131042327"></p>
-<p>存在CVE_2017_10271_ECHO漏洞，利用该漏洞获取权限</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250509221642325.png" alt="image-20250509221642325"></p>
-<p>上线cs</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512111258799.png" alt="image-20250512111258799"></p>
-<h2 id="内网信息收集"><a href="#内网信息收集" class="headerlink" title="内网信息收集"></a>内网信息收集</h2><p>网段信息收集 <code>ipconfig /all</code></p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512110533378.png" alt="image-20250512110533378"></p>
-<p>看到域<code>de1ay.com</code>存在<code>10.10.10.80/24</code>网段，用net user &#x2F;domain</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512111445434.png" alt="image-20250512111445434"></p>
-<p>因为运行Weblogic的权限是Administrator，所以通过这里上线的cs也是管理员权限，为了获得域的信息，需要登录域账户进行收集。</p>
-<p>这里可以考虑获取账号密码的方式</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512112031486.png" alt="image-20250512112031486"></p>
-<p>然后用mssql用户上线</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512112003104.png" alt="image-20250512112003104"></p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512112214001.png" alt="image-20250512112214001"></p>
-<p>然后就收集域内信息：域管理员用户、域内主机、域控</p>
-<p>域管理员用户<code>net group &quot;domain admins&quot; /domain</code></p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512112511309.png" alt="image-20250512112511309"></p>
-<p>域内主机<code>net group &quot;domain computers&quot; /domain</code></p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512113003647.png" alt="image-20250512113003647"></p>
-<p>域控<code>net group &quot;domain controllers&quot; /domain</code></p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512113055487.png" alt="image-20250512113055487"></p>
-<p>这里也可以用cs上的插件直接获取信息</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512113225241.png" alt="image-20250512113225241"></p>
-<p>得到域内信息以后，定位域控</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512113345218.png" alt="image-20250512113345218"></p>
-<p>然后对内网进行扫描，📌📌📌(做个标记，最后再讨论)</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250512184243875.png" alt="image-20250512184243875"></p>
-<h2 id="横向移动"><a href="#横向移动" class="headerlink" title="横向移动"></a>横向移动</h2><p>对内网<code>10.10.10.0/24</code>进行端口探测</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">portscan 10.10.10.0/24</span><br></pre></td></tr></table></figure>
+        <p>今天看到一篇关于域认证协议的文章，写得很好，就学习记录一下，<a target="_blank" rel="noopener" href="https://forum.butian.net/share/4191">文章传送门</a></p>
+<h2 id="NTLM协议—主机认证协议"><a href="#NTLM协议—主机认证协议" class="headerlink" title="NTLM协议—主机认证协议"></a>NTLM协议—主机认证协议</h2><p>首先讲述了NTLM协议，是一种基于Challenge&#x2F;Response的认证机制，仅支持Windows的网络认证协议。过程如下（将文章中的叙述画图表示了一下）：</p>
+<p><img src="/2025/08/08/%E5%9F%9F%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20250806224548617.png" alt="image-20250806224548617"></p>
+<p>原文叙述内容：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 首先，client会向server发送一个username，这个username是存在于server上的一个用户</span><br><span class="line">2. 首先会在本地查询是否存在这样的一个用户，如果存在，将会生成一个16位的随机字符，即Chalenge，然后用查询到的这个user的NTLM hash对Chalenge进行加密，生成Chalenge1，将Chalenge1存储在本地，并将Chalenge传给client。</span><br><span class="line">3. 当client接收到Chalenge时，将发送的username所对应的NTLM hash对Chalenge进行加密即Response，并Response发送给server。</span><br><span class="line">4. server在收到Response后，将其与Chalenge1进行比较，如果相同，则验证成功。</span><br></pre></td></tr></table></figure>
 
-<p>结果中关键信息，开放了445端口，可以利用SMB服务可以通过明文或hash传递来远程执行</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804215826248.png" alt="image-20250804215826248"></p>
-<p>下一步就是获取密码，在system权限上的会话中用mimikatz</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804220801813.png" alt="image-20250804220801813"></p>
-<p>在目标列表中对<code>DC</code>进行横向移动</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804220841117.png" alt="image-20250804220841117"></p>
-<p>先建立一个SMB的监听器</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804220918249.png" alt="image-20250804220918249"></p>
-<p>然后用域用户的session进行横移，当然如果用system权限横移结果也是system权限</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804221023789-4316624.png" alt="image-20250804221023789"></p>
-<p>这里在web机器上用system探测内网的ip，找PC</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804223935474.png" alt="image-20250804223935474"></p>
-<p>同样对PC进行SMB横移</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804224237865.png" alt="image-20250804224237865"></p>
-<p>这样就都完成了</p>
-<p><img src="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/image-20250804224640411.png" alt="image-20250804224640411"></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个靶场当中利用了<code>SMB服务</code>进行横移，利用的条件就是目标开放了<code>SMB服务</code>，并且已经获取到了<code>用户名</code>和密码，利用工具有：</p>
-<ol>
-<li><p>psexec</p>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PsExec64.exe \\<span class="number">192</span>.<span class="number">168</span>.<span class="number">52</span>.<span class="number">136</span> -u &lt;username&gt; -p &lt;password&gt; -s <span class="built_in">cmd</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>smbexec</p>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python smbexec.py ./:@<span class="number">192</span>.<span class="number">168</span>.<span class="number">52</span>.<span class="number">136</span></span><br></pre></td></tr></table></figure></li>
-</ol>
+<h2 id="Kerberos协议—域认证协议"><a href="#Kerberos协议—域认证协议" class="headerlink" title="Kerberos协议—域认证协议"></a>Kerberos协议—域认证协议</h2><p>引用原文：Kerberos是一种网络认证协议，其设计目标是通过密钥系统为客户机 &#x2F; 服务器应用程序提供强大的认证服务。该认证过程的实现不依赖于主机操作系统的认证，无需基于主机地址的信任，不要求网络上所有主机的物理安全。</p>
+<p>在Kerberos协议中有三个角色：用户、服务器、密钥分发中心（KDC），其中KDC又由验证服务器（AS）和票据授予服务器（TGS）组成。</p>
+<ul>
+<li>AS：主要发放 票据授予票据（TGT）</li>
+<li>TGS：主要发放 授予票据（ST）</li>
+</ul>
+<p>这个认证流程首先可以分成三个部分：Client – KDC.AS、Client – KDC.TGS、Client – Server</p>
+<h3 id="Client-–-KDC-AS-认证流程"><a href="#Client-–-KDC-AS-认证流程" class="headerlink" title="Client – KDC.AS 认证流程"></a>Client – KDC.AS 认证流程</h3><p>流程如下：</p>
+<p><img src="/2025/08/08/%E5%9F%9F%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20250807185251546.png" alt="image-20250807185251546"></p>
+<p>这里对<code>信息1</code>进行一下分析：</p>
+<p>首先，TGT是用TGS的密钥加密的，这部分对于Client来说是无法解密的，但是后续Client将TGT发送到TGS，由于里面包含了AS认证的<code>客户端.name</code>，所以验证了Client的真实性。</p>
+<p>然后就是$$这部分（名字是随便起的，标识一下），由于是用Client的密钥加密的，所以Client通过解密后可以得到：<code>TGS的名字</code>、<code>CT_SK</code>、<code>TGT有效时间</code>、<code>时间戳</code>。</p>
+<p>原文内容：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1、客户端用户向KDC以明文的方式发起请求。该次请求中携带了自己的用户名，主机IP，和当前时间戳；</span><br><span class="line"></span><br><span class="line">2、KDC当中的AS接收请求（AS是KDC中专门用来认证客户端身份的认证服务器）后去kerberos认证数据库中根据用户名查找是否存在该用户，如果存在该用户名，则AS认证中心便认为用户存在，此时便会返回响应给客户端，其中包含两部分内容：</span><br><span class="line"></span><br><span class="line">TGT：客户端需要使用TGT去KDC中的TGS获取访问网络服务所需的ST（服务授予票据），TGT中包含的内容有kerberos数据库中存在的该客户端的Name，IP，当前时间戳，客户端即将访问的TGS的Name，TGT的有效时间以及Session_key(CT_SK)。</span><br><span class="line"></span><br><span class="line">整个TGT使用TGS密钥加密，客户端是解密不了的，由于密钥从没有在网络中传输过，所以也不存在密钥被劫持破解的情况。</span><br><span class="line"></span><br><span class="line">第二部分内容是使用客户端密钥加密的一段内容，其中包括Session_key(CT_SK),客户端即将访问的TGS的Name以及TGT的有效时间，和一个当前时间戳。该部分内容使用客户端密钥加密，所以客户端在拿到该部分内容时可以通过自己的密钥解密。如果是一个假的客户端，那么他是不会拥有真正客户端的密钥的，因为该密钥也从没在网络中进行传输过。这也同时认证了客户端的身份，如果是假客户端会由于解密失败从而终端认证流程。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Client-–-KDC-TGS-认证流程"><a href="#Client-–-KDC-TGS-认证流程" class="headerlink" title="Client – KDC.TGS 认证流程"></a>Client – KDC.TGS 认证流程</h3><p>流程如下：</p>
+<p><img src="/2025/08/08/%E5%9F%9F%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20250807234429904.png" alt="image-20250807234429904"></p>
+<p>这里对<code>信息2</code>进行一下分析：</p>
+<p>首先ST是用Server密钥加密的，客户端无法解密所以不能伪造，下一步发送给Server后，Server解密后即可验证Client。</p>
+<p>然后是 $$$$，由于是用的CT_SK加密，在前面客户端是有CT_SK的，所以可以解密得到CS_SK（用于与Server通信的Session_key）。</p>
+<p>这里继续附上原文内容：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">1、客户端使用CT_SK加密将自己的客户端信息发送给KDC，其中包括客户端名，IP，时间戳；</span><br><span class="line"></span><br><span class="line">2、客户端将自己想要访问的Server服务以明文的方式发送给KDC；</span><br><span class="line"></span><br><span class="line">3、客户端将使用TGS密钥加密的TGT也原封不动的也携带给KDC；</span><br><span class="line"></span><br><span class="line">4、此时KDC中的TGS（票据授予服务器）收到了来自客户端的请求。他首先根据客户端明文传输过来的Server服务IP查看当前kerberos系统中是否存在可以被用户访问的该服务。如果不存在，认证失败结束，。如果存在，继续接下来的认证。</span><br><span class="line"></span><br><span class="line">5、TGS使用自己的密钥将TGT中的内容进行解密，此时他看到了经过AS认证过后并记录的用户信息，一把Session_KEY即CT_SK，还有时间戳信息，他会现根据时间戳判断此次通信是否真是可靠有无超出时延。</span><br><span class="line"></span><br><span class="line">6、如果时延正常，则TGS会使用CT_SK对客户端的第一部分内容进行解密（使用CT_SK加密的客户端信息），取出其中的用户信息和TGT中的用户信息进行比对，如果全部相同则认为客户端身份正确，方可继续进行下一步。</span><br><span class="line"></span><br><span class="line">7、此时KDC将返回响应给客户端，响应内容包括：</span><br><span class="line"></span><br><span class="line">第一部分：用于客户端访问网络服务的使用Server密码加密的ST（Servre Ticket），其中包括客户端的Name，</span><br><span class="line"></span><br><span class="line">IP，需要访问的网络服务的地址Server IP，ST的有效时间，时间戳以及用于客户端和服务端之间通信CS_SK（SessionKey）</span><br><span class="line"></span><br><span class="line">第二部分：使用CT_SK加密的内容，其中包括CS_SK和时间戳，还有ST的有效时间。由于在第一次通信的过程中，AS已将CT_SK通过客户端密码加密交给了客户端，且客户端解密并缓存了CT_SK，所以该部分内容在客户端接收到时是可以自己解密的。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Client-–-Server-认证流程"><a href="#Client-–-Server-认证流程" class="headerlink" title="Client – Server 认证流程"></a>Client – Server 认证流程</h3><p>流程如下：</p>
+<p><img src="/2025/08/08/%E5%9F%9F%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20250808001002741.png" alt="image-20250808001002741"></p>
+<p>这里在最后一步Server返回数据Response，原文中是讲用CT_SK加密，可能是笔误，所以这里修改成了CS_SK加密，毕竟这是客户端和服务器的通信，需要客户端和服务器的Session Key。</p>
+<p>下面放上原文内容：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1、客户端使用CS_SK将自己的主机信息和时间戳进行加密作为交给服务端的第一部分内容，然后将ST（服务授予票据）作为第二部分内容都发送给服务端。</span><br><span class="line"></span><br><span class="line">2、服务器此时收到了来自客户端的请求，他会使用自己的密钥，即Server密钥将客户端第二部分内容进行解密，核对时间戳之后将其中的CS_SK取出，使用CS_SK将客户端发来的第一部分内容进行解密，从而获得经过TGS认证过后的客户端信息，此时他将这部分信息和客户端第二部分内容带来的自己的信息进行比对，最终确认该客户端就是经过了KDC认证的具有真实身份的客户端，是他可以提供服务的客户端。此时服务端返回一段使用CT_SK加密的表示接收请求的响应给客户端，在客户端收到请求之后，使用缓存在本地的CS_ST解密之后也确定了服务端的身份（其实服务端在通信的过程中还会使用数字证书证明自己身份）。</span><br><span class="line"></span><br><span class="line">至此，第三次通信完成。此时也代表着整个kerberos认证的完成，通信的双方都确认了对方的身份，此时便可以放心的进行整个网络通信了。</span><br></pre></td></tr></table></figure>
+
+
+
+<p>至此整个认证流程就完毕了，后续就是利用票据实现维权的内容……</p>
 
       </div>
       
         <div class="prev-or-next">
           <div class="post-foot-next">
             
-              <a href="/2025/06/07/wp/" target="_self">
+              <a href="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/" target="_self">
                 <i class="iconfont icon-chevronleft"></i>
                 <span>上一页</span>
               </a>
@@ -256,7 +228,7 @@
           <div class="post-attach">
             <span class="post-pubtime">
               <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-              2025-08-04 00:00:00
+              2025-08-08 00:00:00
             </span>
             
                   <span class="post-categories">
@@ -273,11 +245,6 @@
           </div>
           <div class="post-foot-prev">
             
-              <a href="/2025/08/08/%E5%9F%9F%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/" target="_self">
-                <span>下一页</span>
-                <i class="iconfont icon-chevronright"></i>
-              </a>
-            
           </div>
         </div>
       
@@ -290,7 +257,7 @@
     <div class="title">目录</div>
     <div class="catalog-content">
       
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2%E8%AE%B0%E5%BD%95"><span class="toc-text">红日靶场2记录</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E8%AF%B4%E6%98%8E"><span class="toc-text">环境说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E7%BD%91%E6%B8%97%E9%80%8F"><span class="toc-text">外网渗透</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E7%BD%91%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">内网信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8"><span class="toc-text">横向移动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#NTLM%E5%8D%8F%E8%AE%AE%E2%80%94%E4%B8%BB%E6%9C%BA%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE"><span class="toc-text">NTLM协议—主机认证协议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Kerberos%E5%8D%8F%E8%AE%AE%E2%80%94%E5%9F%9F%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE"><span class="toc-text">Kerberos协议—域认证协议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Client-%E2%80%93-KDC-AS-%E8%AE%A4%E8%AF%81%E6%B5%81%E7%A8%8B"><span class="toc-text">Client – KDC.AS 认证流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Client-%E2%80%93-KDC-TGS-%E8%AE%A4%E8%AF%81%E6%B5%81%E7%A8%8B"><span class="toc-text">Client – KDC.TGS 认证流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Client-%E2%80%93-Server-%E8%AE%A4%E8%AF%81%E6%B5%81%E7%A8%8B"><span class="toc-text">Client – Server 认证流程</span></a></li></ol></li></ol>
       
     </div>
   </div>
