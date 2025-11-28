@@ -15,7 +15,7 @@
   
   <title>
     
-      Category 
+      AI Agent Note 
       
       
       |
@@ -146,19 +146,154 @@
 
 
   
-  <!-- 分类页 url形式：https://yoursite/categories/ -->
-  <div class="container category-index">
-    <div>
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%86%85%E7%BD%91/">内网</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/CommonsCollections/">CommonsCollections</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tools/">tools</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B/">大模型</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B5%84%E6%96%99%E5%88%86%E6%9E%90/">资料分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/AI/">AI</a><span class="category-list-count">1</span></li></ul>
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">AI Agent Note</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2025-11-28 00:00:00
+        </span>
+        
+              <span class="post-categories">
+                <i class="iconfont icon-bookmark" title="分类"></i>
+                
+                <span class="span--category">
+                  <a href="/categories/AI/" title="AI">
+                    <b>#</b> AI
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h1 id="Agent-Tool-Development"><a href="#Agent-Tool-Development" class="headerlink" title="Agent Tool Development"></a>Agent Tool Development</h1><h2 id="Using-LangChain-to-call-Tongyi-Qianwen"><a href="#Using-LangChain-to-call-Tongyi-Qianwen" class="headerlink" title="Using LangChain to call Tongyi Qianwen"></a>Using LangChain to call Tongyi Qianwen</h2><h3 id="一、Init-LLM"><a href="#一、Init-LLM" class="headerlink" title="一、Init LLM"></a>一、Init LLM</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain_openai <span class="keyword">import</span> ChatOpenAI</span><br><span class="line"><span class="keyword">from</span> pydantic <span class="keyword">import</span> SecretStr</span><br><span class="line"></span><br><span class="line">llm = ChatOpenAI(</span><br><span class="line">    model=<span class="string">&quot;qwen-max-latest&quot;</span>,</span><br><span class="line">    base_url=<span class="string">&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;</span>,</span><br><span class="line">    api_key=SecretStr(<span class="string">&quot;sk-*****&quot;</span>),</span><br><span class="line">    streaming=<span class="literal">True</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(llm)</span><br></pre></td></tr></table></figure>
+
+<p>Using <strong>SecretStr Package</strong> to encode <strong>api_key</strong>, result for here</p>
+<p><img src="/2025/11/28/Ai-Agent-Build/image-20251128000450148.png" alt="image-20251128000450148"></p>
+<p>Making a steam out func use to test</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># steam out func</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">Resp</span>(<span class="params">resp_steam</span>):</span><br><span class="line">    <span class="keyword">for</span> chunk <span class="keyword">in</span> resp_steam:</span><br><span class="line">        <span class="built_in">print</span>(chunk.content, end=<span class="string">&quot;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="二、Prompt-Template"><a href="#二、Prompt-Template" class="headerlink" title="二、Prompt Template"></a>二、Prompt Template</h3><h4 id="String-Prompt-Template"><a href="#String-Prompt-Template" class="headerlink" title="String Prompt Template"></a>String Prompt Template</h4><p>Only use to <strong>plain text</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Prompt Template</span></span><br><span class="line">prompt_template = PromptTemplate.from_template(<span class="string">&quot;Today&#x27;s &#123;something&#125; is very nice&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Prompt Template pass params, change template to prompt</span></span><br><span class="line">prompt = prompt_template.<span class="built_in">format</span>(something=<span class="string">&quot;equity market&quot;</span>)</span><br><span class="line">resp = llm.stream(prompt)</span><br><span class="line">Resp(resp)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2025/11/28/Ai-Agent-Build/image-20251128101223455.png" alt="image-20251128101223455"></p>
+<p>The program paradigm of Prompt Template is：</p>
+<ol>
+<li>Creating Prompt Template</li>
+<li>Passing params to Prompt Template, change the template to prompt</li>
+</ol>
+<p>Env of this template：</p>
+<ul>
+<li>Imput of model is Plain Text</li>
+<li>Applicable to simple tasks</li>
+</ul>
+<h4 id="Chat-Prompt-Template"><a href="#Chat-Prompt-Template" class="headerlink" title="Chat Prompt Template"></a>Chat Prompt Template</h4><p>Use to chat task, input are <strong>message list</strong> (SystemMessage、HumanMessage、AIMessage), and simulate <strong>multi-round conversations</strong>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Chat Prompt Template</span></span><br><span class="line">chat_prompt_template = ChatPromptTemplate.from_messages([</span><br><span class="line">    (<span class="string">&quot;system&quot;</span>, <span class="string">&quot;You are a &#123;role&#125; expert, excel in answering the problem of &#123;domain&#125;.&quot;</span>),</span><br><span class="line">    (<span class="string">&quot;user&quot;</span>, <span class="string">&quot;Answer this question: &#123;question&#125;.&quot;</span>)</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Chat Prompt Template pass params, change template to prompt</span></span><br><span class="line">chat_prompt = chat_prompt_template.format_messages(</span><br><span class="line">    role=<span class="string">&quot;programmer&quot;</span>,</span><br><span class="line">    domain=<span class="string">&quot;Web development&quot;</span>,</span><br><span class="line">    question=<span class="string">&quot;How to build a front-end application based Vue&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">resp=llm.stream(chat_prompt)</span><br><span class="line">Resp(resp)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2025/11/28/Ai-Agent-Build/image-20251128105023779.png" alt="image-20251128105023779"></p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2025/09/27/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E6%A6%82%E8%AE%BA/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2025-11-28 00:00:00
+            </span>
+            
+                  <span class="post-categories">
+                    <i class="iconfont icon-bookmark" title="分类"></i>
+                    
+                    <span class="span--category">
+                      <a href="/categories/AI/" title="AI">
+                        <b>#</b> AI
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Agent-Tool-Development"><span class="toc-text">Agent Tool Development</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Using-LangChain-to-call-Tongyi-Qianwen"><span class="toc-text">Using LangChain to call Tongyi Qianwen</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81Init-LLM"><span class="toc-text">一、Init LLM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81Prompt-Template"><span class="toc-text">二、Prompt Template</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#String-Prompt-Template"><span class="toc-text">String Prompt Template</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Chat-Prompt-Template"><span class="toc-text">Chat Prompt Template</span></a></li></ol></li></ol></li></ol></li></ol>
+      
     </div>
   </div>
-  
 
   
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
 
   
-
+    <script async type="text/javascript" src="/plugins/valine.min.js" onload="loadValineSuc(this)"></script>
   
+
+  <div id="vcomments"></div>
+
+  <script>
+    function loadValineSuc() {
+      new Valine({
+        el: '#vcomments',
+        appId: 'fMfTvLYGl6PtxVMVJ1N8NwyS-gzGzoHsz',
+        appKey: '8itevhKQrVt7s9KkIPxfXJpF',
+        placeholder: 'Welcome!',
+        avatar: 'retro',
+        lang: 'zh-CN'
+      })
+    }
+  </script>
+
+    <style>
+      .comments-container .v .vempty {
+        display: none!important;
+      }
+    </style>
+
+
+
+
+      </div>
+    
+  </div>
+
 
         
 <div class="footer">
