@@ -15,6 +15,11 @@
   
   <title>
     
+      AI Agent Note (0x03) 
+      
+      
+      |
+    
      hi-story&#39;s blog
   </title>
 
@@ -105,149 +110,143 @@
 
 
       <div class="flex-container">
-        <div class="container index">
-  <div class="post-list">
-    <!-- 遍历渲染文章 -->
-    
-      <div class="post-item" title="AI Agent Note (0x02)">
-        <div class="time-m-d">2025-12-01</div>
-        <div class="title">
-          <a href="/2025/12/01/0x02-PromptTemplate/">
-            
-              
-                <span>AI Agent Note (0x02)</span>
-              
-            
-          </a>
-        </div>
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">AI Agent Note (0x03)</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2025-12-01 00:00:00
+        </span>
+        
+              <span class="post-categories">
+                <i class="iconfont icon-bookmark" title="分类"></i>
+                
+                <span class="span--category">
+                  <a href="/categories/AI/" title="AI">
+                    <b>#</b> AI
+                  </a>
+                </span>
+                
+              </span>
+          
       </div>
-    
-      <div class="post-item" title="AI Agent Note (0x03)">
-        <div class="time-m-d">2025-12-01</div>
-        <div class="title">
-          <a href="/2025/12/01/0x03-ChainCallingOfLLM/">
-            
-              
-                <span>AI Agent Note (0x03)</span>
-              
-            
-          </a>
-        </div>
+      <div class="markdown-body">
+        <h2 id="Using-LangChain-to-call-Tongyi-Qianwen"><a href="#Using-LangChain-to-call-Tongyi-Qianwen" class="headerlink" title="Using LangChain to call Tongyi Qianwen"></a>Using LangChain to call Tongyi Qianwen</h2><h3 id="0x03、Chain-calling-of-LLM"><a href="#0x03、Chain-calling-of-LLM" class="headerlink" title="0x03、Chain calling of LLM"></a>0x03、Chain calling of LLM</h3><p>In previous article, we firstly get the prompt, than we use prompt to call LLM.</p>
+<p>Here is another method to call LLM. We combine the <strong>prompt template</strong> with LLM, and name it <strong>chain</strong>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Chain calling of LLM</span></span><br><span class="line">chain = few_shot_prompt_template | llm</span><br><span class="line"><span class="built_in">print</span>(chain)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2025/12/01/0x03-ChainCallingOfLLM/image-20251201143909368.png" alt="image-20251201143909368"></p>
+<p>Than, we use chain calling.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">resp = chain.stream(<span class="built_in">input</span>=&#123;<span class="string">&quot;text&quot;</span>: <span class="string">&quot;This is chain calling of LLM&quot;</span>&#125;)</span><br><span class="line">Resp(resp)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2025/12/01/0x03-ChainCallingOfLLM/image-20251201145827774.png" alt="image-20251201145827774"></p>
+
       </div>
-    
-      <div class="post-item" title="AI Agent Note (0x01)">
-        <div class="time-m-d">2025-11-28</div>
-        <div class="title">
-          <a href="/2025/11/28/0x01-InitLLM/">
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
             
-              
-                <span>AI Agent Note (0x01)</span>
-              
+              <a href="/2025/11/28/0x01-InitLLM/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
             
-          </a>
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2025-12-01 00:00:00
+            </span>
+            
+                  <span class="post-categories">
+                    <i class="iconfont icon-bookmark" title="分类"></i>
+                    
+                    <span class="span--category">
+                      <a href="/categories/AI/" title="AI">
+                        <b>#</b> AI
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2025/12/01/0x02-PromptTemplate/" target="_self">
+                <span>下一页</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
         </div>
-      </div>
+      
+    </div>
     
-      <div class="post-item" title="学习笔记">
-        <div class="time-m-d">2025-09-27</div>
-        <div class="title">
-          <a href="/2025/09/27/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E6%A6%82%E8%AE%BA/">
-            
-              
-                <span>学习笔记</span>
-              
-            
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="域认证协议Kerberos">
-        <div class="time-m-d">2025-08-08</div>
-        <div class="title">
-          <a href="/2025/08/08/%E5%9F%9F%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/">
-            
-              
-                <span>域认证协议Kerberos</span>
-              
-            
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="红日靶场2">
-        <div class="time-m-d">2025-08-04</div>
-        <div class="title">
-          <a href="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/">
-            
-              
-                <span>红日靶场2</span>
-              
-            
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="PolarCTF 2025春季挑战赛">
-        <div class="time-m-d">2025-06-07</div>
-        <div class="title">
-          <a href="/2025/06/07/wp/">
-            
-              
-                <span>PolarCTF 2025春季挑战赛</span>
-              
-            
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="基于CodeBERT-LSTM大模型攻击检测Demo">
-        <div class="time-m-d">2025-05-17</div>
-        <div class="title">
-          <a href="/2025/05/17/%E4%BB%A3%E7%A0%81%E8%AF%B4%E6%98%8E/">
-            
-              
-                <span>基于CodeBERT-LSTM大模型攻击检测Demo</span>
-              
-            
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="考试笔记">
-        <div class="time-m-d">2024-10-16</div>
-        <div class="title">
-          <a href="/2024/10/16/%E8%B5%84%E6%96%99%E5%88%86%E6%9E%90tips/">
-            
-              
-                <span>考试笔记</span>
-              
-            
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="CFS三层内网渗透">
-        <div class="time-m-d">2024-09-24</div>
-        <div class="title">
-          <a href="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/">
-            
-              
-                <span>CFS三层内网渗透</span>
-              
-            
-          </a>
-        </div>
-      </div>
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Using-LangChain-to-call-Tongyi-Qianwen"><span class="toc-text">Using LangChain to call Tongyi Qianwen</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03%E3%80%81Chain-calling-of-LLM"><span class="toc-text">0x03、Chain calling of LLM</span></a></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
     
   </div>
-  <nav class="post-navigation">
-    
-    <span class="page-num">1 / 2</span>
-    
-      <a href="/page/2/"><i class="iconfont icon-angleright"></i></a>
-    
-  </nav>
-</div>
+
 
         
 <div class="footer">
