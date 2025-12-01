@@ -159,7 +159,7 @@
       <div class="post-attach">
         <span class="post-pubtime">
           <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-          2025-12-01 00:00:00
+          2025-11-30 00:00:00
         </span>
         
               <span class="post-categories">
@@ -178,7 +178,7 @@
         <h3 id="0x02、Prompt-Template"><a href="#0x02、Prompt-Template" class="headerlink" title="0x02、Prompt Template"></a>0x02、Prompt Template</h3><h4 id="String-Prompt-Template"><a href="#String-Prompt-Template" class="headerlink" title="String Prompt Template"></a>String Prompt Template</h4><p>Only use to <strong>plain text</strong></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Prompt Template</span></span><br><span class="line">prompt_template = PromptTemplate.from_template(<span class="string">&quot;Today&#x27;s &#123;something&#125; is very nice&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Prompt Template pass params, change template to prompt</span></span><br><span class="line">prompt = prompt_template.<span class="built_in">format</span>(something=<span class="string">&quot;equity market&quot;</span>)</span><br><span class="line">resp = llm.stream(prompt)</span><br><span class="line">Resp(resp)</span><br></pre></td></tr></table></figure>
 
-<p><img src="/2025/12/01/0x02-PromptTemplate/image-20251128101223455.png" alt="image-20251128101223455"></p>
+<p><img src="/2025/11/30/0x02-PromptTemplate/image-20251128101223455.png" alt="image-20251128101223455"></p>
 <p>The program paradigm of Prompt Template is：</p>
 <ol>
 <li>Creating Prompt Template</li>
@@ -192,7 +192,7 @@
 <h4 id="Chat-Prompt-Template"><a href="#Chat-Prompt-Template" class="headerlink" title="Chat Prompt Template"></a>Chat Prompt Template</h4><p>Use to chat task, input are <strong>message list</strong> (SystemMessage、HumanMessage、AIMessage), and simulate <strong>multi-round conversations</strong>.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Chat Prompt Template</span></span><br><span class="line">chat_prompt_template = ChatPromptTemplate.from_messages([</span><br><span class="line">    (<span class="string">&quot;system&quot;</span>, <span class="string">&quot;You are a &#123;role&#125; expert, excel in answering the problem of &#123;domain&#125;.&quot;</span>),</span><br><span class="line">    (<span class="string">&quot;user&quot;</span>, <span class="string">&quot;Answer this question: &#123;question&#125;.&quot;</span>)</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Chat Prompt Template pass params, change template to prompt</span></span><br><span class="line">chat_prompt = chat_prompt_template.format_messages(</span><br><span class="line">    role=<span class="string">&quot;programmer&quot;</span>,</span><br><span class="line">    domain=<span class="string">&quot;Web development&quot;</span>,</span><br><span class="line">    question=<span class="string">&quot;How to build a front-end application based Vue&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">resp=llm.stream(chat_prompt)</span><br><span class="line">Resp(resp)</span><br></pre></td></tr></table></figure>
 
-<p><img src="/2025/12/01/0x02-PromptTemplate/image-20251128105023779.png" alt="image-20251128105023779"></p>
+<p><img src="/2025/11/30/0x02-PromptTemplate/image-20251128105023779.png" alt="image-20251128105023779"></p>
 <hr>
 <p>📌📌</p>
 <p>In this way, the prompt template can be abstracted, but often we need to <strong>reuse message,</strong> so we can union <code>ChatPromptTemplate</code> and <code>ChatMessagePromptTemplate</code> to abstract message template.</p>
@@ -201,7 +201,7 @@
 <p>Than, the <code>chat_prompt_template</code> should be changed</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">chat_prompt_template = ChatPromptTemplate.from_messages([</span><br><span class="line">    system_message_template,</span><br><span class="line">    human_message_template</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
 
-<p><img src="/2025/12/01/0x02-PromptTemplate/image-20251128141030742.png" alt="image-20251128141030742"></p>
+<p><img src="/2025/11/30/0x02-PromptTemplate/image-20251128141030742.png" alt="image-20251128141030742"></p>
 <hr>
 <h4 id="FewShot-Prompt-Template"><a href="#FewShot-Prompt-Template" class="headerlink" title="FewShot Prompt Template"></a>FewShot Prompt Template</h4><p>When we need complex task and need example to guide model’s action, we can use few shot learning, there are examples in prompt.</p>
 <p>For example, we create a template named <code>few_shot_prompt_template</code>, there are five arguments.</p>
@@ -224,14 +224,14 @@
 <p>Than, printing <code>prompt_template</code>.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">prompt = few_shot_prompt_template.<span class="built_in">format</span>(text=<span class="string">&quot;Thank you for your help!&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(prompt)</span><br></pre></td></tr></table></figure>
 
-<p><img src="/2025/12/01/0x02-PromptTemplate/image-20251201134101610.png" alt="image-20251201134101610"></p>
+<p><img src="/2025/11/30/0x02-PromptTemplate/image-20251201134101610.png" alt="image-20251201134101610"></p>
 <p>We can see the prefix and the three exampls we gave. Now, let the LLM to perform task.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Create few shot prompt template</span></span><br><span class="line">example_template = <span class="string">&quot;input: &#123;input&#125;\noutput: &#123;output&#125;&quot;</span></span><br><span class="line"></span><br><span class="line">example = [</span><br><span class="line">    &#123;<span class="string">&quot;input&quot;</span>: <span class="string">&quot;Translate &#x27;hello&#x27; to Chinese&quot;</span>, <span class="string">&quot;output&quot;</span>: <span class="string">&quot;你好&quot;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;input&quot;</span>: <span class="string">&quot;Translate &#x27;goodbye&#x27; to Chinese&quot;</span>, <span class="string">&quot;output&quot;</span>: <span class="string">&quot;再见&quot;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;input&quot;</span>: <span class="string">&quot;Translate &#x27;hello&#x27; to Chinese&quot;</span>, <span class="string">&quot;output&quot;</span>: <span class="string">&quot;你好&quot;</span>&#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">few_shot_prompt_template = FewShotPromptTemplate(</span><br><span class="line">    examples=example,</span><br><span class="line">    example_prompt=PromptTemplate.from_template(example_template),</span><br><span class="line">    prefix=<span class="string">&quot;Translate English to Chinese: &quot;</span>,  <span class="comment"># target for this conversion</span></span><br><span class="line">    suffix=<span class="string">&quot;input: &#123;text&#125;\noutput: &quot;</span>,  <span class="comment"># format for this conversion</span></span><br><span class="line">    input_variables=[<span class="string">&quot;text&quot;</span>]</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># print(few_shot_prompt_template)</span></span><br><span class="line"></span><br><span class="line">prompt = few_shot_prompt_template.<span class="built_in">format</span>(text=<span class="string">&quot;Thank you for your help!&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(prompt)</span><br><span class="line"></span><br><span class="line">resp = llm.stream(prompt)</span><br><span class="line">Resp(resp)</span><br></pre></td></tr></table></figure>
 
-<p><img src="/2025/12/01/0x02-PromptTemplate/image-20251201134528690.png" alt="image-20251201134528690"></p>
+<p><img src="/2025/11/30/0x02-PromptTemplate/image-20251201134528690.png" alt="image-20251201134528690"></p>
 <p>We can see the output of LLM is only the Chinese text like the examples.</p>
 <hr>
-<h4 id="Inheritance-Relationship-of-Common-Prompt-Template-Classes"><a href="#Inheritance-Relationship-of-Common-Prompt-Template-Classes" class="headerlink" title="Inheritance Relationship of Common Prompt Template Classes"></a>Inheritance Relationship of Common Prompt Template Classes</h4><p><img src="/2025/12/01/0x02-PromptTemplate/image-20251201141327551.png" alt="image-20251201141327551"></p>
+<h4 id="Inheritance-Relationship-of-Common-Prompt-Template-Classes"><a href="#Inheritance-Relationship-of-Common-Prompt-Template-Classes" class="headerlink" title="Inheritance Relationship of Common Prompt Template Classes"></a>Inheritance Relationship of Common Prompt Template Classes</h4><p><img src="/2025/11/30/0x02-PromptTemplate/image-20251201141327551.png" alt="image-20251201141327551"></p>
 <p>In short, the base prompt template has two templates, one is string template, to finish single task, the other is chat template, to finish multi-round conversions. </p>
 <p>Furthermore, the message template is aiming at message body.</p>
 
@@ -240,7 +240,7 @@
         <div class="prev-or-next">
           <div class="post-foot-next">
             
-              <a href="/2025/12/01/0x03-ChainCallingOfLLM/" target="_self">
+              <a href="/2025/11/28/0x01-InitLLM/" target="_self">
                 <i class="iconfont icon-chevronleft"></i>
                 <span>上一页</span>
               </a>
@@ -249,7 +249,7 @@
           <div class="post-attach">
             <span class="post-pubtime">
               <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-              2025-12-01 00:00:00
+              2025-11-30 00:00:00
             </span>
             
                   <span class="post-categories">
@@ -265,6 +265,11 @@
               
           </div>
           <div class="post-foot-prev">
+            
+              <a href="/2025/12/01/0x03-ChainCallingOfLLM/" target="_self">
+                <span>下一页</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
             
           </div>
         </div>
