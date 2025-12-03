@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="hi-story" />
+  <!-- Open Graph Description 简短摘要-->
+  
+  <!-- 用于搜索引擎的文章摘要 -->
+  
+  <meta name="description" content="the way, the truth, the life" />
+  
+  
+  
+  <title>
+    
+      AI Agent Note (0x04) 
+      
+      
+      |
+    
+     hi-story&#39;s blog
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+    
+<link rel="stylesheet" href="/css/figcaption/mac-block.css">
+
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">hi-story</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          <a href="/categories/">Categories</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">AI Agent Note (0x04)</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2025-12-03 00:00:00
+        </span>
+        
+              <span class="post-categories">
+                <i class="iconfont icon-bookmark" title="分类"></i>
+                
+                <span class="span--category">
+                  <a href="/categories/AI/" title="AI">
+                    <b>#</b> AI
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h2 id="绑定自定义工具"><a href="#绑定自定义工具" class="headerlink" title="绑定自定义工具"></a>绑定自定义工具</h2><h3 id="一、工具函数"><a href="#一、工具函数" class="headerlink" title="一、工具函数"></a>一、工具函数</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;调用了函数add：&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br></pre></td></tr></table></figure>
+
+<h3 id="二、将工具函数转换为LangChain-Tool对象"><a href="#二、将工具函数转换为LangChain-Tool对象" class="headerlink" title="二、将工具函数转换为LangChain Tool对象"></a>二、将工具函数转换为LangChain Tool对象</h3><p>引入<code>from langchain_core.tools import Tool</code>,通过这个可以把函数转化为大模型能够理解的工具</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;调用了函数add：&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br><span class="line"></span><br><span class="line">add_tools = Tool.from_function(</span><br><span class="line">    func=add,</span><br><span class="line">    name=<span class="string">&quot;add&quot;</span>,</span><br><span class="line">    description=<span class="string">&quot;两个数相加&quot;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="三、大模型和Tool对象绑定"><a href="#三、大模型和Tool对象绑定" class="headerlink" title="三、大模型和Tool对象绑定"></a>三、大模型和Tool对象绑定</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">llm_with_tools = llm.bind_tools([add_tools])</span><br><span class="line">chain = chat_prompt_template | llm_with_tools</span><br></pre></td></tr></table></figure>
+
+<h3 id="四、调用大模型"><a href="#四、调用大模型" class="headerlink" title="四、调用大模型"></a>四、调用大模型</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">resp = chain.invoke(<span class="built_in">input</span>=&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;计算&quot;</span>, <span class="string">&quot;domain&quot;</span>: <span class="string">&quot;数学计算&quot;</span>, <span class="string">&quot;question&quot;</span>: <span class="string">&quot;100+100=?&quot;</span>&#125;)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(resp))</span><br><span class="line"><span class="built_in">print</span>(resp)</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="/2025/12/03/0x04-%E7%BB%91%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7/image-20251203102953163.png" alt="image-20251203102953163"></p>
+<p>可以看到返回的类型是一个<code>AIMessage</code>的类型，简单分解一下消息体<code>resp</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">content=<span class="string">&#x27;&#x27;</span> </span><br><span class="line"></span><br><span class="line">additional_kwargs=&#123;</span><br><span class="line">	<span class="string">&#x27;tool_calls&#x27;</span>: [&#123;</span><br><span class="line">		<span class="string">&#x27;index&#x27;</span>: <span class="number">0</span>, </span><br><span class="line">		<span class="string">&#x27;id&#x27;</span>: <span class="string">&#x27;call_38caa7727617474bac274c&#x27;</span>, </span><br><span class="line">		<span class="string">&#x27;function&#x27;</span>: &#123;</span><br><span class="line">			<span class="string">&#x27;arguments&#x27;</span>: <span class="string">&#x27;&#123;&quot;__arg1&quot;: &quot;100&quot;, &quot;__arg2&quot;: &quot;100&quot;&#125;&#x27;</span>, </span><br><span class="line">			<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;add&#x27;</span></span><br><span class="line">		&#125;, </span><br><span class="line">		<span class="string">&#x27;type&#x27;</span>: <span class="string">&#x27;function&#x27;</span></span><br><span class="line">	&#125;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">response_metadata=&#123;</span><br><span class="line">	<span class="string">&#x27;finish_reason&#x27;</span>: <span class="string">&#x27;tool_calls&#x27;</span>, </span><br><span class="line">	<span class="string">&#x27;model_name&#x27;</span>: <span class="string">&#x27;qwen-max-latest&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">id</span>=<span class="string">&#x27;run--7350a276-475d-443c-9233-d55bfff39686-0&#x27;</span> </span><br><span class="line"></span><br><span class="line">tool_calls=[&#123;</span><br><span class="line">	<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;add&#x27;</span>, </span><br><span class="line">	<span class="string">&#x27;args&#x27;</span>: &#123;<span class="string">&#x27;__arg1&#x27;</span>: <span class="string">&#x27;100&#x27;</span>, <span class="string">&#x27;__arg2&#x27;</span>: <span class="string">&#x27;100&#x27;</span>&#125;, </span><br><span class="line">	<span class="string">&#x27;id&#x27;</span>: <span class="string">&#x27;call_38caa7727617474bac274c&#x27;</span>, </span><br><span class="line">	<span class="string">&#x27;type&#x27;</span>: <span class="string">&#x27;tool_call&#x27;</span></span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
+
+<p>第一个<code>content</code>对象，是大模型返回的文本内容，这里是空的，先不解释，，，</p>
+<p>然后是<code>additional_kwargs</code>对象，里面包含了一个<code>tool_calls</code>数组，数组里面有函数的名字和需要传入的参数。</p>
+<p>所以可以看出，到这里大模型所做的事情就是选择了一个tool，并且确定了传入的参数，但是并没有去使用tool，这也就是为什么<code>content</code>会是空的原因。</p>
+<h3 id="五、让大模型调用工具"><a href="#五、让大模型调用工具" class="headerlink" title="五、让大模型调用工具"></a>五、让大模型调用工具</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">tool_dict = &#123;</span><br><span class="line">    <span class="string">&quot;add&quot;</span>: add</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> tool_calls <span class="keyword">in</span> resp.tool_calls:</span><br><span class="line">    <span class="built_in">print</span>(tool_calls)</span><br><span class="line"></span><br><span class="line">    func_name = tool_calls[<span class="string">&quot;name&quot;</span>]</span><br><span class="line">    <span class="built_in">print</span>(func_name)</span><br><span class="line"></span><br><span class="line">    args = tool_calls[<span class="string">&quot;args&quot;</span>]</span><br><span class="line">    <span class="built_in">print</span>(args)</span><br><span class="line"></span><br><span class="line">    tool_func = tool_dict[func_name]</span><br><span class="line">    tool_content = tool_func(<span class="built_in">int</span>(args[<span class="string">&#x27;__arg1&#x27;</span>]), <span class="built_in">int</span>(args[<span class="string">&#x27;__arg2&#x27;</span>]))</span><br><span class="line">    <span class="built_in">print</span>(tool_content)</span><br></pre></td></tr></table></figure>
+
+<p>结果</p>
+<p><img src="/2025/12/03/0x04-%E7%BB%91%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7/image-20251203110347321.png" alt="image-20251203110347321"></p>
+<p>到这里实现了一个很基础且粗糙的大模型工具调用，，，下面就是优化部分</p>
+<hr>
+<h3 id="六、优化"><a href="#六、优化" class="headerlink" title="六、优化"></a>六、优化</h3><h4 id="1、tool-对象转换"><a href="#1、tool-对象转换" class="headerlink" title="1、tool 对象转换"></a>1、tool 对象转换</h4><p>使用<code>@tool</code>装饰器生成</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;两个数相加&quot;&quot;&quot;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;调用了函数add：&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(add))</span><br><span class="line">  </span><br><span class="line">llm_with_tools = llm.bind_tools([add])</span><br></pre></td></tr></table></figure>
+
+<p>这里打印<code>add</code>的类型是<code>&lt;class &#39;langchain_core.tools.structured.StructuredTool&#39;&gt;</code>，可以看到已经是一个类似结构体的东西了</p>
+<p>相应的调用逻辑也需要进行修改</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> tool_calls <span class="keyword">in</span> resp.tool_calls:</span><br><span class="line">    <span class="built_in">print</span>(tool_calls)</span><br><span class="line"></span><br><span class="line">    func_name = tool_calls[<span class="string">&quot;name&quot;</span>]</span><br><span class="line">    <span class="built_in">print</span>(func_name)</span><br><span class="line"></span><br><span class="line">    args = tool_calls[<span class="string">&quot;args&quot;</span>]</span><br><span class="line">    <span class="built_in">print</span>(args)</span><br><span class="line"></span><br><span class="line">    tool_func = tool_dict[func_name]</span><br><span class="line">    tool_content = tool_func.invoke(args)</span><br><span class="line">    <span class="built_in">print</span>(tool_content)</span><br></pre></td></tr></table></figure>
+
+<p>由于<code>add</code>已经是一个大模型可以识别的tool，所以这里直接用<code>invoke</code>方法，并且传入tool_calls当中的<code>args</code>就可以直接调用。下面是完整代码👇🏻</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> app.bailian.commom <span class="keyword">import</span> chat_prompt_template, llm</span><br><span class="line"><span class="keyword">from</span> langchain_core.tools <span class="keyword">import</span> Tool, tool</span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;两个数相加&quot;&quot;&quot;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;调用了函数add：&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br><span class="line"></span><br><span class="line">llm_with_tools = llm.bind_tools([add])</span><br><span class="line"></span><br><span class="line">chain = chat_prompt_template | llm_with_tools</span><br><span class="line"></span><br><span class="line">resp = chain.invoke(<span class="built_in">input</span>=&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;计算&quot;</span>, <span class="string">&quot;domain&quot;</span>: <span class="string">&quot;数学计算&quot;</span>, <span class="string">&quot;question&quot;</span>: <span class="string">&quot;使用工具计算100+100=?&quot;</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(resp)</span><br><span class="line"></span><br><span class="line">tool_dict = &#123;</span><br><span class="line">    <span class="string">&quot;add&quot;</span>: add</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> tool_calls <span class="keyword">in</span> resp.tool_calls:</span><br><span class="line">    <span class="built_in">print</span>(tool_calls)</span><br><span class="line"></span><br><span class="line">    func_name = tool_calls[<span class="string">&quot;name&quot;</span>]</span><br><span class="line">    <span class="built_in">print</span>(func_name)</span><br><span class="line"></span><br><span class="line">    args = tool_calls[<span class="string">&quot;args&quot;</span>]</span><br><span class="line">    <span class="built_in">print</span>(args)</span><br><span class="line"></span><br><span class="line">    tool_func = tool_dict[func_name]</span><br><span class="line">    tool_content = tool_func.invoke(args)</span><br><span class="line">    <span class="built_in">print</span>(tool_content)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2025/12/03/0x04-%E7%BB%91%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7/image-20251203142700953.png" alt="image-20251203142700953"></p>
+<h4 id="2、定义数据类型"><a href="#2、定义数据类型" class="headerlink" title="2、定义数据类型"></a>2、定义数据类型</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AddInputArgs</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    a: <span class="built_in">int</span> = Field(description=<span class="string">&quot;第一个数&quot;</span>)</span><br><span class="line">    b: <span class="built_in">int</span> = Field(description=<span class="string">&quot;第二个数&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="meta">    description=<span class="string">&quot;两个数相加&quot;</span>,</span></span></span><br><span class="line"><span class="params"><span class="meta">    args_schema=AddInputArgs</span></span></span><br><span class="line"><span class="params"><span class="meta"></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;调用了函数add：&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br></pre></td></tr></table></figure>
+
+<p>在装饰器中添加一个<code>args_schema</code>变量，传递一个class类<code>AddInputArgs</code>，对<code>a</code>和<code>b</code>两个变量的类型进行了定义，并且添加了相应的描述</p>
+<p>修改一下<code>invoke</code>，这里先让大模型回答了传入的两个参数，然后再调用工具，看一下执行的效果</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">resp = chain.invoke(<span class="built_in">input</span>=&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;计算&quot;</span>, <span class="string">&quot;domain&quot;</span>: <span class="string">&quot;数学计算&quot;</span>, <span class="string">&quot;question&quot;</span>: <span class="string">&quot;先告诉我传入工具的参数都是什么，然后使用工具计算100+100等于多少&quot;</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2025/12/03/0x04-%E7%BB%91%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7/image-20251203151732815.png" alt="image-20251203151732815"></p>
+<p>可以看到大模型先回答了两个参数，然后返回了工具的调用信息。</p>
+<p>下面修改参数类型为字符串，然后再去执行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AddInputArgs</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    a: <span class="built_in">str</span> = Field(description=<span class="string">&quot;第一个数&quot;</span>)</span><br><span class="line">    b: <span class="built_in">str</span> = Field(description=<span class="string">&quot;第二个数&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2025/12/03/0x04-%E7%BB%91%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7/image-20251203152241176.png" alt="image-20251203152241176"></p>
+<p>可以看到，虽然大模型回答了参数是字符串类型，但是仍然是回答用<code>add</code>计算100 + 100，而<code>tool_calls</code>的<code>args</code>中参数类型是之前规定的字符串类型，调用结果也是字符串的拼接。也就是说前边装饰器当中定义的参数类型，不会因为大模型的认识而发生改变。</p>
+<h3 id="七、修改示例，启动本地计算器进行计算"><a href="#七、修改示例，启动本地计算器进行计算" class="headerlink" title="七、修改示例，启动本地计算器进行计算"></a>七、修改示例，启动本地计算器进行计算</h3><p>1、工具函数</p>
+<p>先写一个简易的调用本地计算器的代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> pyautogui</span><br><span class="line"></span><br><span class="line">pyautogui.hotkey(<span class="string">&#x27;esc&#x27;</span>)</span><br><span class="line">pyautogui.hotkey(<span class="string">&#x27;esc&#x27;</span>)</span><br><span class="line">time.sleep(<span class="number">1</span>)</span><br><span class="line">pyautogui.hotkey(<span class="string">&#x27;command&#x27;</span>, <span class="string">&#x27;space&#x27;</span>)</span><br><span class="line">time.sleep(<span class="number">3</span>)</span><br><span class="line">pyautogui.typewrite(<span class="string">&#x27;Calculator&#x27;</span>)</span><br><span class="line">time.sleep(<span class="number">2</span>)</span><br><span class="line">pyautogui.press(<span class="string">&#x27;enter&#x27;</span>)</span><br><span class="line">time.sleep(<span class="number">3</span>)</span><br><span class="line">pyautogui.typewrite(<span class="string">&#x27;100+200&#x27;</span>)</span><br><span class="line">time.sleep(<span class="number">1</span>)</span><br><span class="line">pyautogui.press(<span class="string">&#x27;enter&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>然后用装饰器转换为tool对象</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AddInputArgs</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    a: <span class="built_in">str</span> = Field(description=<span class="string">&quot;第一个数&quot;</span>)</span><br><span class="line">    b: <span class="built_in">str</span> = Field(description=<span class="string">&quot;第二个数&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="meta">    description=<span class="string">&quot;用计算器对两个数进行相加&quot;</span>,</span></span></span><br><span class="line"><span class="params"><span class="meta">    args_schema=AddInputArgs</span></span></span><br><span class="line"><span class="params"><span class="meta"></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate</span>(<span class="params">a, b</span>):</span><br><span class="line">    pyautogui.hotkey(<span class="string">&#x27;esc&#x27;</span>)</span><br><span class="line">    pyautogui.hotkey(<span class="string">&#x27;esc&#x27;</span>)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    pyautogui.hotkey(<span class="string">&#x27;command&#x27;</span>, <span class="string">&#x27;space&#x27;</span>)</span><br><span class="line">    time.sleep(<span class="number">3</span>)</span><br><span class="line">    pyautogui.typewrite(<span class="string">&#x27;Calculator&#x27;</span>)</span><br><span class="line">    time.sleep(<span class="number">2</span>)</span><br><span class="line">    pyautogui.press(<span class="string">&#x27;enter&#x27;</span>)</span><br><span class="line">    time.sleep(<span class="number">3</span>)</span><br><span class="line">    pyautogui.typewrite(<span class="built_in">str</span>(a) + <span class="string">&#x27;+&#x27;</span> + <span class="built_in">str</span>(b))</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    pyautogui.press(<span class="string">&#x27;enter&#x27;</span>)</span><br><span class="line">    time.sleep(<span class="number">3</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;系统执行完成&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">llm_with_tool = llm.bind_tools([calculate])</span><br></pre></td></tr></table></figure>
+
+<p>然后将大模型和tool对象进行绑定，并写入提示词</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">chain = chat_prompt_template | llm_with_tool</span><br><span class="line"></span><br><span class="line">llm_input = &#123;</span><br><span class="line">    <span class="string">&quot;role&quot;</span>: <span class="string">&quot;编程&quot;</span>,</span><br><span class="line">    <span class="string">&quot;domain&quot;</span>: <span class="string">&quot;后端开发&quot;</span>,</span><br><span class="line">    <span class="string">&quot;question&quot;</span>: <span class="string">&quot;调用本地计算器，计算100+200的值是多少&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">resp = chain.invoke(<span class="built_in">input</span>=llm_input)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(resp)</span><br></pre></td></tr></table></figure>
+
+<p>最后调用工具</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">tool_dict = &#123;</span><br><span class="line">    <span class="string">&quot;calculate&quot;</span>: calculate</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> tool_calls <span class="keyword">in</span> resp.tool_calls:</span><br><span class="line">    args = tool_calls[<span class="string">&quot;args&quot;</span>]</span><br><span class="line">    func_name = tool_calls[<span class="string">&quot;name&quot;</span>]</span><br><span class="line"></span><br><span class="line">    tool_func = tool_dict[func_name]</span><br><span class="line">    tool_content = tool_func.invoke(args)</span><br><span class="line">    <span class="built_in">print</span>(tool_content)</span><br></pre></td></tr></table></figure>
+
+<p>结果如下👇🏻</p>
+<p>&lt;video id&#x3D;”video” controls&#x3D;””src&#x3D;”.&#x2F;0x04-绑定自定义工具&#x2F;video-20251203161810.mov” preload&#x3D;”none”&gt;</p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2025/12/01/0x03-ChainCallingOfLLM/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2025-12-03 00:00:00
+            </span>
+            
+                  <span class="post-categories">
+                    <i class="iconfont icon-bookmark" title="分类"></i>
+                    
+                    <span class="span--category">
+                      <a href="/categories/AI/" title="AI">
+                        <b>#</b> AI
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%91%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7"><span class="toc-text">绑定自定义工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%B7%A5%E5%85%B7%E5%87%BD%E6%95%B0"><span class="toc-text">一、工具函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%B0%86%E5%B7%A5%E5%85%B7%E5%87%BD%E6%95%B0%E8%BD%AC%E6%8D%A2%E4%B8%BALangChain-Tool%E5%AF%B9%E8%B1%A1"><span class="toc-text">二、将工具函数转换为LangChain Tool对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%92%8CTool%E5%AF%B9%E8%B1%A1%E7%BB%91%E5%AE%9A"><span class="toc-text">三、大模型和Tool对象绑定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E8%B0%83%E7%94%A8%E5%A4%A7%E6%A8%A1%E5%9E%8B"><span class="toc-text">四、调用大模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E8%AE%A9%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%B0%83%E7%94%A8%E5%B7%A5%E5%85%B7"><span class="toc-text">五、让大模型调用工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E4%BC%98%E5%8C%96"><span class="toc-text">六、优化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81tool-%E5%AF%B9%E8%B1%A1%E8%BD%AC%E6%8D%A2"><span class="toc-text">1、tool 对象转换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">2、定义数据类型</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E4%BF%AE%E6%94%B9%E7%A4%BA%E4%BE%8B%EF%BC%8C%E5%90%AF%E5%8A%A8%E6%9C%AC%E5%9C%B0%E8%AE%A1%E7%AE%97%E5%99%A8%E8%BF%9B%E8%A1%8C%E8%AE%A1%E7%AE%97"><span class="toc-text">七、修改示例，启动本地计算器进行计算</span></a></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://blog.y1fan.work/">Copyright © 2025 hi-story</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Thanks to Oranges</a>
+        
+    </div>
+  
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+
+      </div>
+    </div>
+  </body>
+</html>
