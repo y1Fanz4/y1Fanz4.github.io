@@ -235,11 +235,10 @@
 <p>最后调用工具</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">tool_dict = &#123;</span><br><span class="line">    <span class="string">&quot;calculate&quot;</span>: calculate</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> tool_calls <span class="keyword">in</span> resp.tool_calls:</span><br><span class="line">    args = tool_calls[<span class="string">&quot;args&quot;</span>]</span><br><span class="line">    func_name = tool_calls[<span class="string">&quot;name&quot;</span>]</span><br><span class="line"></span><br><span class="line">    tool_func = tool_dict[func_name]</span><br><span class="line">    tool_content = tool_func.invoke(args)</span><br><span class="line">    <span class="built_in">print</span>(tool_content)</span><br></pre></td></tr></table></figure>
 
-<p>结果如下👇🏻👇🏻</p>
-<p>&lt;video<br>  id&#x3D;”video”<br>  controls<br>  preload&#x3D;”none”<br>  src&#x3D;”&#x2F;2025&#x2F;12&#x2F;03&#x2F;0x04-%E7%BB%91%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7&#x2F;video-20251203161810.mov”<br>  style&#x3D;”display: block; margin: 0 auto; max-width: 100%; max-height: 80vh; width: auto; height: auto;”</p>
-<blockquote>
-</blockquote>
-
+<p>结果如下👇🏻</p>
+<div>
+<video id="video" controls preload="none" src="/2025/12/03/0x04-%E7%BB%91%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7/video-20251203161810.mov" style="display: block; margin: 0 auto; max-width: 100%; max-height: 80vh; width: auto; height: auto;">
+</video></div>
 
 
       </div>
