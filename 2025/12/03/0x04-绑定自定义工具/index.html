@@ -236,9 +236,8 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">tool_dict = &#123;</span><br><span class="line">    <span class="string">&quot;calculate&quot;</span>: calculate</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> tool_calls <span class="keyword">in</span> resp.tool_calls:</span><br><span class="line">    args = tool_calls[<span class="string">&quot;args&quot;</span>]</span><br><span class="line">    func_name = tool_calls[<span class="string">&quot;name&quot;</span>]</span><br><span class="line"></span><br><span class="line">    tool_func = tool_dict[func_name]</span><br><span class="line">    tool_content = tool_func.invoke(args)</span><br><span class="line">    <span class="built_in">print</span>(tool_content)</span><br></pre></td></tr></table></figure>
 
 <p>结果如下👇🏻</p>
-<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;"><iframe url="./0x04-绑定自定义工具/video-20251203161810.mov" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe></div>
+<div style="position: relative; width: 738; height: 400;"><iframe src="https://blog.y1fan.work/2025/12/03/0x04-%E7%BB%91%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7/video-20251203161810.mov" scrolling="no" allowfullscreen="true"> </iframe></div>
 
-<p>&lt;video id&#x3D;”video” controls&#x3D;””src&#x3D;”.&#x2F;0x04-绑定自定义工具&#x2F;video-20251203161810.mov” preload&#x3D;”none”&gt;</p>
 
       </div>
       
