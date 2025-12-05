@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="hi-story" />
+  <!-- Open Graph Description 简短摘要-->
+  
+  <!-- 用于搜索引擎的文章摘要 -->
+  
+  <meta name="description" content="the way, the truth, the life" />
+  
+  
+  
+  <title>
+    
+      AI Agent Note (智能体创建) 
+      
+      
+      |
+    
+     hi-story&#39;s blog
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+    
+<link rel="stylesheet" href="/css/figcaption/mac-block.css">
+
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">hi-story</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          <a href="/categories/">Categories</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">AI Agent Note (智能体创建)</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2025-12-05 00:00:00
+        </span>
+        
+              <span class="post-categories">
+                <i class="iconfont icon-bookmark" title="分类"></i>
+                
+                <span class="span--category">
+                  <a href="/categories/AI/" title="AI">
+                    <b>#</b> AI
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <p>之前实现了大模型对工具的调用，现在实现初始化一个智能体，然后对工具进行调用。</p>
+<p>这里有一个问题，智能体是基于大模型对工具进行调用，这二者有什么区别？</p>
+<p>这是一个非常关键、也是很多人容易混淆的问题。<strong>大模型调用工具</strong>和<strong>智能体调用工具</strong>看起来都能触发外部函数&#x2F;接口，但它们的行为模型、执行流程、决策机制和适用场景完全不同。</p>
+<p>LLM 只做<strong>一次决策</strong>：选哪个工具 + 给参数 → 工具执行 → 直接返回结果。它本身不会思考“下一步该怎么办”。</p>
+<p>Agent 是<strong>可以持续推理、规划、循环执行</strong>的系统，它会根据工具结果重新思考、再调用工具、多轮执行并最终形成任务完成闭环。</p>
+<p>理论先摆在这，，，下面创建一个智能体，然后实现调用工具进行数学计算，最后与前面大模型调用工具进行对比。</p>
+<h2 id="智能体创建"><a href="#智能体创建" class="headerlink" title="智能体创建"></a>智能体创建</h2><h3 id="初始化智能体"><a href="#初始化智能体" class="headerlink" title="初始化智能体"></a>初始化智能体</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> app.bailian.commom <span class="keyword">import</span> create_calc_tools, llm, chat_prompt_template</span><br><span class="line"></span><br><span class="line">agent = initialize_agent(</span><br><span class="line">    tools=create_calc_tools(),</span><br><span class="line">    llm=llm,</span><br><span class="line">    agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,</span><br><span class="line">    verbose=<span class="literal">True</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>这里初始化一个名为<code>agent</code>的智能体，有4个参数：</p>
+<ul>
+<li><p>tools：可以理解为一个工具集</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AddInputArgs</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    a: <span class="built_in">int</span> = Field(description=<span class="string">&quot;第一个数&quot;</span>)</span><br><span class="line">    b: <span class="built_in">int</span> = Field(description=<span class="string">&quot;第二个数&quot;</span>)</span><br><span class="line"><span class="meta">@tool(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="meta">    description=<span class="string">&quot;两个数相加&quot;</span>,</span></span></span><br><span class="line"><span class="params"><span class="meta">    args_schema=AddInputArgs,</span></span></span><br><span class="line"><span class="params"><span class="meta">    return_direct=<span class="literal">False</span></span></span></span><br><span class="line"><span class="params"><span class="meta"></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;调用了函数add：&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br><span class="line"><span class="meta">@tool(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="meta">    description=<span class="string">&quot;两个数相减&quot;</span>,</span></span></span><br><span class="line"><span class="params"><span class="meta">    args_schema=AddInputArgs,</span></span></span><br><span class="line"><span class="params"><span class="meta">    return_direct=<span class="literal">False</span></span></span></span><br><span class="line"><span class="params"><span class="meta"></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">jian</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;调用了函数jian：&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> a - b</span><br><span class="line"><span class="meta">@tool(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="meta">    description=<span class="string">&quot;两个数相乘&quot;</span>,</span></span></span><br><span class="line"><span class="params"><span class="meta">    args_schema=AddInputArgs,</span></span></span><br><span class="line"><span class="params"><span class="meta">    return_direct=<span class="literal">False</span></span></span></span><br><span class="line"><span class="params"><span class="meta"></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">cheng</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;调用了函数cheng：&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> a * b</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_calc_tools</span>():</span><br><span class="line">    <span class="keyword">return</span> [add, jian, cheng]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>llm：所调用的大模型</p>
+</li>
+<li><p>agent：所用到的agent类型</p>
+</li>
+<li><p>verbose：输出调试信息</p>
+</li>
+</ul>
+<p>这里关于AgentType可以看一下它的实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@deprecated(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="meta">    <span class="string">&quot;0.1.0&quot;</span>,</span></span></span><br><span class="line"><span class="params"><span class="meta">    message=AGENT_DEPRECATION_WARNING,</span></span></span><br><span class="line"><span class="params"><span class="meta">    removal=<span class="string">&quot;1.0&quot;</span>,</span></span></span><br><span class="line"><span class="params"><span class="meta"></span>)</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AgentType</span>(<span class="built_in">str</span>, Enum):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;An enum for agent types.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    See documentation: https://python.langchain.com/api_reference/langchain/agents/langchain.agents.agent_types.AgentType.html</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    ZERO_SHOT_REACT_DESCRIPTION = <span class="string">&quot;zero-shot-react-description&quot;</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;A zero shot agent that does a reasoning step before acting.&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    REACT_DOCSTORE = <span class="string">&quot;react-docstore&quot;</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;A zero shot agent that does a reasoning step before acting.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    This agent has access to a document store that allows it to look up</span></span><br><span class="line"><span class="string">    relevant information to answering the question.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    SELF_ASK_WITH_SEARCH = <span class="string">&quot;self-ask-with-search&quot;</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;An agent that breaks down a complex question into a series of simpler questions.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    This agent uses a search tool to look up answers to the simpler questions</span></span><br><span class="line"><span class="string">    in order to answer the original complex question.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    CONVERSATIONAL_REACT_DESCRIPTION = <span class="string">&quot;conversational-react-description&quot;</span></span><br><span class="line">    CHAT_ZERO_SHOT_REACT_DESCRIPTION = <span class="string">&quot;chat-zero-shot-react-description&quot;</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;A zero shot agent that does a reasoning step before acting.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    This agent is designed to be used in conjunction</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    CHAT_CONVERSATIONAL_REACT_DESCRIPTION = <span class="string">&quot;chat-conversational-react-description&quot;</span></span><br><span class="line"></span><br><span class="line">    STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION = (</span><br><span class="line">        <span class="string">&quot;structured-chat-zero-shot-react-description&quot;</span></span><br><span class="line">    )</span><br><span class="line">    <span class="string">&quot;&quot;&quot;An zero-shot react agent optimized for chat models.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    This agent is capable of invoking tools that have multiple inputs.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    OPENAI_FUNCTIONS = <span class="string">&quot;openai-functions&quot;</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;An agent optimized for using open AI functions.&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    OPENAI_MULTI_FUNCTIONS = <span class="string">&quot;openai-multi-functions&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="写提示词"><a href="#写提示词" class="headerlink" title="写提示词"></a>写提示词</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">prompt = chat_prompt_template.format_messages(</span><br><span class="line">    role=<span class="string">&quot;计算&quot;</span>,</span><br><span class="line">    domain=<span class="string">&quot;使用工具进行数学计算&quot;</span>,</span><br><span class="line">    question=<span class="string">f&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    请阅读下面的问题，并返回一个严格的json对象，不要使用markdown代码块包裹。</span></span><br><span class="line"><span class="string">    格式要求：<span class="subst">&#123;format_instructions&#125;</span></span></span><br><span class="line"><span class="string">    问题：帮我求 2 × (100 - 50)</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>这里还是用的之前的<code>template</code>，传入三个变量：<code>role</code>、<code>domain</code>、<code>question</code></p>
+<p>用<code>langchain</code>的<code>parsers</code>来控制输出格式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Output</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    args: <span class="built_in">str</span> = Field(<span class="string">&quot;输入的参数:&quot;</span>)</span><br><span class="line">    result: <span class="built_in">str</span> = Field(<span class="string">&quot;返回的结果&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">parser = JsonOutputParser(pydantic_object=Output)</span><br><span class="line">format_instructions = parser.get_format_instructions()</span><br><span class="line"></span><br><span class="line">resp = agent.invoke(prompt)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(resp[<span class="string">&#x27;output&#x27;</span>])</span><br></pre></td></tr></table></figure>
+
+<p>结果如下👇🏻</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">The output should be formatted as a JSON instance that conforms to the JSON schema below.</span><br><span class="line"></span><br><span class="line">As an example, <span class="keyword">for</span> the schema &#123;&quot;properties&quot;: &#123;&quot;foo&quot;: &#123;&quot;<span class="built_in">title</span>&quot;: &quot;Foo&quot;, &quot;description&quot;: &quot;a list of strings&quot;, &quot;<span class="built_in">type</span>&quot;: &quot;array&quot;, &quot;items&quot;: &#123;&quot;<span class="built_in">type</span>&quot;: &quot;string&quot;&#125;&#125;&#125;, &quot;required&quot;: [&quot;foo&quot;]&#125;</span><br><span class="line">the object &#123;&quot;foo&quot;: [&quot;bar&quot;, &quot;baz&quot;]&#125; is a well-formatted instance of the schema. The object &#123;&quot;properties&quot;: &#123;&quot;foo&quot;: [&quot;bar&quot;, &quot;baz&quot;]&#125;&#125; is <span class="keyword">not</span> well-formatted.</span><br><span class="line"></span><br><span class="line">Here is the output schema:</span><br><span class="line">```</span><br><span class="line">&#123;&quot;properties&quot;: &#123;&quot;args&quot;: &#123;&quot;default&quot;: &quot;输入的参数:&quot;, &quot;<span class="built_in">title</span>&quot;: &quot;Args&quot;, &quot;<span class="built_in">type</span>&quot;: &quot;string&quot;&#125;, &quot;result&quot;: &#123;&quot;default&quot;: &quot;返回的结果&quot;, &quot;<span class="built_in">title</span>&quot;: &quot;Result&quot;, &quot;<span class="built_in">type</span>&quot;: &quot;string&quot;&#125;&#125;&#125;</span><br><span class="line">```</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&gt; Entering new AgentExecutor chain...</span><br><span class="line"><span class="function">Thought: 我需要先计算括号内的值，然后再乘以2。</span></span><br><span class="line"><span class="function"><span class="title">Action</span>:</span></span><br><span class="line"><span class="function">```</span></span><br><span class="line"><span class="function">&#123;</span></span><br><span class="line"><span class="function">  &quot;<span class="title">action</span>&quot;: &quot;<span class="title">jian</span>&quot;,</span></span><br><span class="line"><span class="function">  &quot;<span class="title">action_input</span>&quot;: &#123;</span></span><br><span class="line"><span class="function">    &quot;<span class="title">a</span>&quot;: 100,</span></span><br><span class="line"><span class="function">    &quot;<span class="title">b</span>&quot;: 50</span></span><br><span class="line"><span class="function">  &#125;</span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function">```</span></span><br><span class="line"><span class="function">调用了函数<span class="title">jian</span>：</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">Observation</span>: 50</span></span><br><span class="line"><span class="function"><span class="title">Thought</span>:现在我需要将括号内的结果乘以2。</span></span><br><span class="line"><span class="function"><span class="title">Action</span>:</span></span><br><span class="line"><span class="function">```</span></span><br><span class="line"><span class="function">&#123;</span></span><br><span class="line"><span class="function">  &quot;<span class="title">action</span>&quot;: &quot;<span class="title">cheng</span>&quot;,</span></span><br><span class="line"><span class="function">  &quot;<span class="title">action_input</span>&quot;: &#123;</span></span><br><span class="line"><span class="function">    &quot;<span class="title">a</span>&quot;: 2,</span></span><br><span class="line"><span class="function">    &quot;<span class="title">b</span>&quot;: 50</span></span><br><span class="line"><span class="function">  &#125;</span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function">```调用了函数<span class="title">cheng</span>：</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">Observation</span>: 100</span></span><br><span class="line"><span class="function"><span class="title">Thought</span>:我现在可以返回最终答案了。</span></span><br><span class="line"><span class="function"><span class="title">Action</span>:</span></span><br><span class="line"><span class="function">```</span></span><br><span class="line"><span class="function">&#123;</span></span><br><span class="line"><span class="function">  &quot;<span class="title">action</span>&quot;: &quot;<span class="title">Final</span> <span class="title">Answer</span>&quot;,</span></span><br><span class="line"><span class="function">  &quot;<span class="title">action_input</span>&quot;: &quot;&#123;\&quot;<span class="title">args</span>\&quot;: \&quot;2 × (100 - 50)\&quot;, \&quot;<span class="title">result</span>\&quot;: \&quot;100\&quot;&#125;&quot;</span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function">```</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">&gt; <span class="title">Finished</span> <span class="title">chain</span>.</span></span><br><span class="line"><span class="function">&#123;&quot;<span class="title">args</span>&quot;: &quot;2 × (100 - 50)&quot;, &quot;<span class="title">result</span>&quot;: &quot;100&quot;&#125;</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">进程已结束，退出代码为 0</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，这里智能体先进行了规划</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Thought: 我需要先计算括号内的值，然后再乘以2。</span></span><br><span class="line"><span class="function"><span class="title">Action</span>:</span></span><br><span class="line"><span class="function">```</span></span><br><span class="line"><span class="function">&#123;</span></span><br><span class="line"><span class="function">  &quot;<span class="title">action</span>&quot;: &quot;<span class="title">jian</span>&quot;,</span></span><br><span class="line"><span class="function">  &quot;<span class="title">action_input</span>&quot;: &#123;</span></span><br><span class="line"><span class="function">    &quot;<span class="title">a</span>&quot;: 100,</span></span><br><span class="line"><span class="function">    &quot;<span class="title">b</span>&quot;: 50</span></span><br><span class="line"><span class="function">  &#125;</span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function">```</span></span><br><span class="line"><span class="function">调用了函数<span class="title">jian</span>：</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">Observation</span>: 50</span></span><br></pre></td></tr></table></figure>
+
+<p>得到了第一步的计算结果，这里并没有完成，而是循环执行，进行了下一步的调用</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Thought:现在我需要将括号内的结果乘以2。</span></span><br><span class="line"><span class="function"><span class="title">Action</span>:</span></span><br><span class="line"><span class="function">```</span></span><br><span class="line"><span class="function">&#123;</span></span><br><span class="line"><span class="function">  &quot;<span class="title">action</span>&quot;: &quot;<span class="title">cheng</span>&quot;,</span></span><br><span class="line"><span class="function">  &quot;<span class="title">action_input</span>&quot;: &#123;</span></span><br><span class="line"><span class="function">    &quot;<span class="title">a</span>&quot;: 2,</span></span><br><span class="line"><span class="function">    &quot;<span class="title">b</span>&quot;: 50</span></span><br><span class="line"><span class="function">  &#125;</span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function">```调用了函数<span class="title">cheng</span>：</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">Observation</span>: 100</span></span><br></pre></td></tr></table></figure>
+
+<p>最后又进行了一步思考，然后返回了答案</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Thought:我现在可以返回最终答案了。</span></span><br><span class="line"><span class="function"><span class="title">Action</span>:</span></span><br><span class="line"><span class="function">```</span></span><br><span class="line"><span class="function">&#123;</span></span><br><span class="line"><span class="function">  &quot;<span class="title">action</span>&quot;: &quot;<span class="title">Final</span> <span class="title">Answer</span>&quot;,</span></span><br><span class="line"><span class="function">  &quot;<span class="title">action_input</span>&quot;: &quot;&#123;\&quot;<span class="title">args</span>\&quot;: \&quot;2 × (100 - 50)\&quot;, \&quot;<span class="title">result</span>\&quot;: \&quot;100\&quot;&#125;&quot;</span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function">```</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">&gt; <span class="title">Finished</span> <span class="title">chain</span>.</span></span><br><span class="line"><span class="function">&#123;&quot;<span class="title">args</span>&quot;: &quot;2 × (100 - 50)&quot;, &quot;<span class="title">result</span>&quot;: &quot;100&quot;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>回到前面，对比大模型调用，用同样的问题，让大模型来完成任务：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> app.bailian.commom <span class="keyword">import</span> create_calc_tools, add, jian, cheng</span><br><span class="line"><span class="keyword">from</span> app.bailian.commom <span class="keyword">import</span> chat_prompt_template, llm</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">calc_tool = create_calc_tools()</span><br><span class="line">llm_with_tools = llm.bind_tools(calc_tool)</span><br><span class="line"></span><br><span class="line">chain = chat_prompt_template | llm_with_tools</span><br><span class="line"></span><br><span class="line">resp = chain.invoke(<span class="built_in">input</span>=&#123;</span><br><span class="line">    <span class="string">&quot;role&quot;</span>: <span class="string">&quot;计算&quot;</span>,</span><br><span class="line">    <span class="string">&quot;domain&quot;</span>: <span class="string">&quot;数学计算&quot;</span>,</span><br><span class="line">    <span class="string">&quot;question&quot;</span>: <span class="string">&quot;帮我求 2 × (100 - 50)&quot;</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(resp)</span><br></pre></td></tr></table></figure>
+
+<p>resp的内容如下：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">content=&#x27;&#x27; additional_kwargs=&#123;&#x27;tool_calls&#x27;: [&#123;&#x27;index&#x27;: <span class="number">0</span>, &#x27;id&#x27;: &#x27;call_8a45115ab4ea4cf0837b91&#x27;, &#x27;function&#x27;: &#123;&#x27;arguments&#x27;: &#x27;&#123;&quot;a&quot;: <span class="number">100</span>, &quot;b&quot;: <span class="number">50</span>&#125;&#x27;, &#x27;name&#x27;: &#x27;jian&#x27;&#125;, &#x27;<span class="built_in">type</span>&#x27;: &#x27;function&#x27;&#125;, &#123;&#x27;index&#x27;: <span class="number">1</span>, &#x27;id&#x27;: &#x27;call_75d1788ce3544703aaae25&#x27;, &#x27;function&#x27;: &#123;&#x27;arguments&#x27;: &#x27;&#123;&quot;a&quot;: <span class="number">2</span>, &quot;b&quot;: &quot;jian(<span class="number">100</span>, <span class="number">50</span>)&quot;&#125;&#x27;, &#x27;name&#x27;: &#x27;cheng&#x27;&#125;, &#x27;<span class="built_in">type</span>&#x27;: &#x27;function&#x27;&#125;]&#125; response_metadata=&#123;&#x27;finish_reason&#x27;: &#x27;tool_calls&#x27;, &#x27;model_name&#x27;: &#x27;qwen-max-latest&#x27;&#125; id=&#x27;run--e4cfd825-<span class="number">384</span>d-<span class="number">43</span>dd-a06d-f8539a252cd9-<span class="number">0</span>&#x27; tool_calls=[&#123;&#x27;name&#x27;: &#x27;jian&#x27;, &#x27;args&#x27;: &#123;&#x27;a&#x27;: <span class="number">100</span>, &#x27;b&#x27;: <span class="number">50</span>&#125;, &#x27;id&#x27;: &#x27;call_8a45115ab4ea4cf0837b91&#x27;, &#x27;<span class="built_in">type</span>&#x27;: &#x27;tool_call&#x27;&#125;, &#123;&#x27;name&#x27;: &#x27;cheng&#x27;, &#x27;args&#x27;: &#123;&#x27;a&#x27;: <span class="number">2</span>, &#x27;b&#x27;: &#x27;jian(<span class="number">100</span>, <span class="number">50</span>)&#x27;&#125;, &#x27;id&#x27;: &#x27;call_75d1788ce3544703aaae25&#x27;, &#x27;<span class="built_in">type</span>&#x27;: &#x27;tool_call&#x27;&#125;]</span><br><span class="line">&#123;&#x27;name&#x27;: &#x27;jian&#x27;, &#x27;args&#x27;: &#123;&#x27;a&#x27;: <span class="number">100</span>, &#x27;b&#x27;: <span class="number">50</span>&#125;, &#x27;id&#x27;: &#x27;call_8a45115ab4ea4cf0837b91&#x27;, &#x27;<span class="built_in">type</span>&#x27;: &#x27;tool_call&#x27;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，在<code>tool_calls</code>列表中第二次调用工具传入的参数<code>b</code>为<code>jian(100, 50)</code>，就可以推测出大模型内部的计划是</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">步骤<span class="number">1</span>：调用 jian(<span class="number">100</span>, <span class="number">50</span>)</span><br><span class="line">步骤<span class="number">2</span>：调用 cheng(<span class="number">2</span>, result_of_step1)</span><br></pre></td></tr></table></figure>
+
+<p>这就是大模型根据<code>prompt</code>仅生成<strong>结构化函数调用计划</strong>，不会执行，也不会知道第一次调用返回了多少。</p>
+<p>通过这个简单的Demo，就可以看出来大模型调用工具和智能体调用工具的区别了。</p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2025/12/03/0x04-%E7%BB%91%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2025-12-05 00:00:00
+            </span>
+            
+                  <span class="post-categories">
+                    <i class="iconfont icon-bookmark" title="分类"></i>
+                    
+                    <span class="span--category">
+                      <a href="/categories/AI/" title="AI">
+                        <b>#</b> AI
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%99%BA%E8%83%BD%E4%BD%93%E5%88%9B%E5%BB%BA"><span class="toc-text">智能体创建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%99%BA%E8%83%BD%E4%BD%93"><span class="toc-text">初始化智能体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%99%E6%8F%90%E7%A4%BA%E8%AF%8D"><span class="toc-text">写提示词</span></a></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://blog.y1fan.work/">Copyright © 2025 hi-story</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Thanks to Oranges</a>
+        
+    </div>
+  
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+
+      </div>
+    </div>
+  </body>
+</html>
