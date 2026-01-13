@@ -15,7 +15,7 @@
   
   <title>
     
-      archive_a: 2023 
+      Books_Manager FileUpload 
       
       
       |
@@ -110,242 +110,148 @@
 
 
       <div class="flex-container">
-        <!-- 归档页，展示本站所有文章，按照年份降序归类，url形式：https://yoursite/archives/ -->
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
 
-<!-- last: 按年份把文章分组，当前遍历到的年份 -->
-<!-- now: 当前遍历到的文章的发布年份 -->
 
-<div class="container archives">
-  <div class="post-list">
-    
-        <!-- 后续文章的发布年份呈现 -->
-        <div class="content-title">
-          <h2>
-            <span>2026</span>
-          </h2>
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">Books_Manager FileUpload</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2026-01-13 00:00:00
+        </span>
+        
+              <span class="post-categories">
+                <i class="iconfont icon-bookmark" title="分类"></i>
+                
+                <span class="span--category">
+                  <a href="/categories/%E6%BC%8F%E6%B4%9E/" title="漏洞">
+                    <b>#</b> 漏洞
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h2 id="Vulnerability-Introduction"><a href="#Vulnerability-Introduction" class="headerlink" title="Vulnerability Introduction"></a>Vulnerability Introduction</h2><p>The 1.0 version of Books_Manager’s upload_bookCover.php interface has an arbitrary file upload vulnerability, as its interface does not detect file suffixes. Attackers can upload any type of file, which may result in getshell and more serious consequences.</p>
+<h2 id="Vulnerability-analysis"><a href="#Vulnerability-analysis" class="headerlink" title="Vulnerability analysis"></a>Vulnerability analysis</h2><p>Vulnerability file：controllers&#x2F;books_center&#x2F;upload_bookCover.php</p>
+<p><img src="/2026/01/13/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0getshell/image-20260113162945482.png" alt="image-20260113162945482"></p>
+<p>The backend logic does not validate the file type.</p>
+<p>Validation of the upload type was performed only on the frontend，in administrator&#x2F;books_center&#x2F;add_book.php file</p>
+<p><img src="/2026/01/13/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0getshell/image-20260113163223486.png" alt="image-20260113163223486"></p>
+<h2 id="Vulnerability-reproduction"><a href="#Vulnerability-reproduction" class="headerlink" title="Vulnerability reproduction"></a>Vulnerability reproduction</h2><p><img src="/2026/01/13/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0getshell/image-20260113163415670.png" alt="image-20260113163415670"></p>
+<p>use BurpSuite to change request</p>
+<p><img src="/2026/01/13/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0getshell/image-20260113163518862.png" alt="image-20260113163518862"></p>
+<p>Find the path of webshell</p>
+<p><img src="/2026/01/13/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0getshell/image-20260113163610114.png" alt="image-20260113163610114"></p>
+<p><a target="_blank" rel="noopener" href="https://lib.crayon.vip/upload/bookCover/1768292566_chuizi.php">https://lib.crayon.vip/upload/bookCover/1768292566_chuizi.php</a></p>
+<p>Use tools to connect webshell</p>
+<p><img src="/2026/01/13/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0getshell/image-20260113164010574.png" alt="image-20260113164010574"></p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2025/12/05/0x05-%E5%86%85%E7%BD%AE%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8&%E8%BF%94%E5%9B%9E%E4%BD%93%E6%8E%A7%E5%88%B6/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2026-01-13 00:00:00
+            </span>
+            
+                  <span class="post-categories">
+                    <i class="iconfont icon-bookmark" title="分类"></i>
+                    
+                    <span class="span--category">
+                      <a href="/categories/%E6%BC%8F%E6%B4%9E/" title="漏洞">
+                        <b>#</b> 漏洞
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2026/01/13/%E5%AD%98%E5%82%A8%E5%9E%8Bxss/" target="_self">
+                <span>下一页</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
         </div>
       
-      <div class="post-item" title="Books_Manager XSS">
-        <div class="time-m-d">01-13</div>
-        <div class="title">
-          <a href="/2026/01/13/%E5%AD%98%E5%82%A8%E5%9E%8Bxss/">
-            <span>Books_Manager XSS</span>
-          </a>
-        </div>
-      </div>
+    </div>
     
-      <div class="post-item" title="Books_Manager FileUpload">
-        <div class="time-m-d">01-13</div>
-        <div class="title">
-          <a href="/2026/01/13/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0getshell/">
-            <span>Books_Manager FileUpload</span>
-          </a>
-        </div>
-      </div>
-    
-        <!-- 后续文章的发布年份呈现 -->
-        <div class="content-title">
-          <h2>
-            <span>2025</span>
-          </h2>
-        </div>
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
       
-      <div class="post-item" title="AI Agent Note (智能体创建)">
-        <div class="time-m-d">12-05</div>
-        <div class="title">
-          <a href="/2025/12/05/0x05-%E5%86%85%E7%BD%AE%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8&%E8%BF%94%E5%9B%9E%E4%BD%93%E6%8E%A7%E5%88%B6/">
-            <span>AI Agent Note (智能体创建)</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="AI Agent Note (绑定自定义工具)">
-        <div class="time-m-d">12-03</div>
-        <div class="title">
-          <a href="/2025/12/03/0x04-%E7%BB%91%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7/">
-            <span>AI Agent Note (绑定自定义工具)</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="AI Agent Note (LangChain调用通义千问大模型)">
-        <div class="time-m-d">12-01</div>
-        <div class="title">
-          <a href="/2025/12/01/0x03-ChainCallingOfLLM/">
-            <span>AI Agent Note (LangChain调用通义千问大模型)</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="AI Agent Note (0x02)">
-        <div class="time-m-d">11-30</div>
-        <div class="title">
-          <a href="/2025/11/30/0x02-PromptTemplate/">
-            <span>AI Agent Note (0x02)</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="AI Agent Note (0x01)">
-        <div class="time-m-d">11-28</div>
-        <div class="title">
-          <a href="/2025/11/28/0x01-InitLLM/">
-            <span>AI Agent Note (0x01)</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="学习笔记">
-        <div class="time-m-d">09-27</div>
-        <div class="title">
-          <a href="/2025/09/27/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E6%A6%82%E8%AE%BA/">
-            <span>学习笔记</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="域认证协议Kerberos">
-        <div class="time-m-d">08-08</div>
-        <div class="title">
-          <a href="/2025/08/08/%E5%9F%9F%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/">
-            <span>域认证协议Kerberos</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="红日靶场2">
-        <div class="time-m-d">08-04</div>
-        <div class="title">
-          <a href="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/">
-            <span>红日靶场2</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="PolarCTF 2025春季挑战赛">
-        <div class="time-m-d">06-07</div>
-        <div class="title">
-          <a href="/2025/06/07/wp/">
-            <span>PolarCTF 2025春季挑战赛</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="基于CodeBERT-LSTM大模型攻击检测Demo">
-        <div class="time-m-d">05-17</div>
-        <div class="title">
-          <a href="/2025/05/17/%E4%BB%A3%E7%A0%81%E8%AF%B4%E6%98%8E/">
-            <span>基于CodeBERT-LSTM大模型攻击检测Demo</span>
-          </a>
-        </div>
-      </div>
-    
-        <!-- 后续文章的发布年份呈现 -->
-        <div class="content-title">
-          <h2>
-            <span>2024</span>
-          </h2>
-        </div>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Vulnerability-Introduction"><span class="toc-text">Vulnerability Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vulnerability-analysis"><span class="toc-text">Vulnerability analysis</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vulnerability-reproduction"><span class="toc-text">Vulnerability reproduction</span></a></li></ol>
       
-      <div class="post-item" title="考试笔记">
-        <div class="time-m-d">10-16</div>
-        <div class="title">
-          <a href="/2024/10/16/%E8%B5%84%E6%96%99%E5%88%86%E6%9E%90tips/">
-            <span>考试笔记</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="CFS三层内网渗透">
-        <div class="time-m-d">09-24</div>
-        <div class="title">
-          <a href="/2024/09/24/CFS%E4%B8%89%E5%B1%82%E5%86%85%E7%BD%91/">
-            <span>CFS三层内网渗透</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="venom-crypt基于原版改动">
-        <div class="time-m-d">09-17</div>
-        <div class="title">
-          <a href="/2024/09/17/venom-crypt/">
-            <span>venom-crypt基于原版改动</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="隧道技术学习">
-        <div class="time-m-d">08-28</div>
-        <div class="title">
-          <a href="/2024/08/28/%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/">
-            <span>隧道技术学习</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="Java反序列化（CommonsCollections6）">
-        <div class="time-m-d">03-27</div>
-        <div class="title">
-          <a href="/2024/03/27/commons-collections6/">
-            <span>Java反序列化（CommonsCollections6）</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="Java反序列化（CommonsCollections1）">
-        <div class="time-m-d">03-22</div>
-        <div class="title">
-          <a href="/2024/03/22/commons-collections1/">
-            <span>Java反序列化（CommonsCollections1）</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="Java反序列化（URLDNS）">
-        <div class="time-m-d">03-15</div>
-        <div class="title">
-          <a href="/2024/03/15/urldns/">
-            <span>Java反序列化（URLDNS）</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="Java反序列化（一）反射">
-        <div class="time-m-d">01-08</div>
-        <div class="title">
-          <a href="/2024/01/08/%E4%BA%8C%E3%80%81%E5%8F%8D%E5%B0%84/">
-            <span>Java反序列化（一）反射</span>
-          </a>
-        </div>
-      </div>
-    
-        <!-- 后续文章的发布年份呈现 -->
-        <div class="content-title">
-          <h2>
-            <span>2023</span>
-          </h2>
-        </div>
-      
-      <div class="post-item" title="PolarCTF 2023冬季挑战赛">
-        <div class="time-m-d">12-09</div>
-        <div class="title">
-          <a href="/2023/12/09/PolarD&N%20ctf-wp/">
-            <span>PolarCTF 2023冬季挑战赛</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="记录一个反序列化中利用代码逻辑绕过__wakeup()函数的方法">
-        <div class="time-m-d">11-30</div>
-        <div class="title">
-          <a href="/2023/11/30/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BB%A3%E7%A0%81%E9%80%BB%E8%BE%91%E7%BB%95%E8%BF%87__wakeup()%E5%87%BD%E6%95%B0/">
-            <span>记录一个反序列化中利用代码逻辑绕过__wakeup()函数的方法</span>
-          </a>
-        </div>
-      </div>
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
     
   </div>
-</div>
+
 
         
 <div class="footer">
