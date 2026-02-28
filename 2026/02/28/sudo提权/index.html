@@ -15,6 +15,11 @@
   
   <title>
     
+      伪终端绕过tty限制 
+      
+      
+      |
+    
      hi-story&#39;s blog
   </title>
 
@@ -105,149 +110,148 @@
 
 
       <div class="flex-container">
-        <div class="container index">
-  <div class="post-list">
-    <!-- 遍历渲染文章 -->
-    
-      <div class="post-item" title="伪终端绕过tty限制">
-        <div class="time-m-d">2026-02-28</div>
-        <div class="title">
-          <a href="/2026/02/28/sudo%E6%8F%90%E6%9D%83/">
-            
-              
-                <span>伪终端绕过tty限制</span>
-              
-            
-          </a>
-        </div>
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">伪终端绕过tty限制</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2026-02-28 00:00:00
+        </span>
+        
+              <span class="post-categories">
+                <i class="iconfont icon-bookmark" title="分类"></i>
+                
+                <span class="span--category">
+                  <a href="/categories/Linux%E6%8F%90%E6%9D%83/" title="Linux提权">
+                    <b>#</b> Linux提权
+                  </a>
+                </span>
+                
+              </span>
+          
       </div>
-    
-      <div class="post-item" title="AI Agent Note (智能体创建)">
-        <div class="time-m-d">2025-12-05</div>
-        <div class="title">
-          <a href="/2025/12/05/0x05-%E5%86%85%E7%BD%AE%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8&%E8%BF%94%E5%9B%9E%E4%BD%93%E6%8E%A7%E5%88%B6/">
-            
-              
-                <span>AI Agent Note (智能体创建)</span>
-              
-            
-          </a>
-        </div>
+      <div class="markdown-body">
+        <h2 id="过程复现"><a href="#过程复现" class="headerlink" title="过程复现"></a>过程复现</h2><p>记一道CTF题目的sudo提权方法，伪终端绕过tty限制</p>
+<p>获取权限的步骤省略，直接</p>
+<p><img src="/2026/02/28/sudo%E6%8F%90%E6%9D%83/image-20260228135432050.png" alt="image-20260228135432050"></p>
+<p>先<code>sudo -l</code>看一下，普通sudo无法提权</p>
+<p><img src="/2026/02/28/sudo%E6%8F%90%E6%9D%83/image-20260228135642395.png" alt="image-20260228135642395"></p>
+<p>然后执行<code>ps -ef</code>查看是否有root权限运行的进程</p>
+<p><img src="/2026/02/28/sudo%E6%8F%90%E6%9D%83/image-20260228140041866.png" alt="image-20260228140041866"></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">script -q -f -c bash -li -c <span class="string">&quot;echo mRSUAlI | sudo -S -v &gt;/dev/null 2&gt;&amp;1; sleep infinity&quot;</span> /dev/null</span><br></pre></td></tr></table></figure>
+
+<p>这条命令用<code>script</code>启动一个伪终端（PTY），嵌套调用<code>bash</code>启动交互式终端，输出字符串 <code>mRSUAlI</code>作为sudo的密码，然后<code>sudo -S -v</code>从标准输入读取密码，不执行命令，只是验证并缓存sudo权限。</p>
+<p>因为<code>sleep infinity</code>让这个会话保持了睡眠，所以复用这个语句仍然有<code>sudo</code>权限</p>
+<p><img src="/2026/02/28/sudo%E6%8F%90%E6%9D%83/image-20260228142227750.png" alt="image-20260228142227750"></p>
+<hr>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>这里可以看到直接执行<code>sudo -n whoami</code>这个命令还是不行，返回了<code>sudo: sorry, you must have a tty to run sudo</code></p>
+<p>因为在<code>/etc/sudoers</code>文件当中，设置了<code>requiretty</code>，是 sudo 的一个安全选项：必须在真实终端（TTY）环境下才能运行<code>sudo</code></p>
+<p><img src="/2026/02/28/sudo%E6%8F%90%E6%9D%83/image-20260228143706363.png" alt="image-20260228143706363"></p>
+<p>所以受到限制的是<code>tty</code>环境，有了<code>tty</code>环境就可以利用缓存的<code>sudo</code>权限了</p>
+<p><img src="/2026/02/28/sudo%E6%8F%90%E6%9D%83/image-20260228144412320.png" alt="image-20260228144412320"></p>
+<p>所以同样用<code>script</code>命令开一个伪终端，测试一下，发现成功执行了<code>sudo</code>命令。</p>
+
       </div>
-    
-      <div class="post-item" title="AI Agent Note (绑定自定义工具)">
-        <div class="time-m-d">2025-12-03</div>
-        <div class="title">
-          <a href="/2025/12/03/0x04-%E7%BB%91%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7/">
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
             
-              
-                <span>AI Agent Note (绑定自定义工具)</span>
-              
+              <a href="/2025/12/05/0x05-%E5%86%85%E7%BD%AE%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8&%E8%BF%94%E5%9B%9E%E4%BD%93%E6%8E%A7%E5%88%B6/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
             
-          </a>
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2026-02-28 00:00:00
+            </span>
+            
+                  <span class="post-categories">
+                    <i class="iconfont icon-bookmark" title="分类"></i>
+                    
+                    <span class="span--category">
+                      <a href="/categories/Linux%E6%8F%90%E6%9D%83/" title="Linux提权">
+                        <b>#</b> Linux提权
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
         </div>
-      </div>
+      
+    </div>
     
-      <div class="post-item" title="AI Agent Note (LangChain调用通义千问大模型)">
-        <div class="time-m-d">2025-12-01</div>
-        <div class="title">
-          <a href="/2025/12/01/0x03-ChainCallingOfLLM/">
-            
-              
-                <span>AI Agent Note (LangChain调用通义千问大模型)</span>
-              
-            
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="AI Agent Note (0x02)">
-        <div class="time-m-d">2025-11-30</div>
-        <div class="title">
-          <a href="/2025/11/30/0x02-PromptTemplate/">
-            
-              
-                <span>AI Agent Note (0x02)</span>
-              
-            
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="AI Agent Note (0x01)">
-        <div class="time-m-d">2025-11-28</div>
-        <div class="title">
-          <a href="/2025/11/28/0x01-InitLLM/">
-            
-              
-                <span>AI Agent Note (0x01)</span>
-              
-            
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="学习笔记">
-        <div class="time-m-d">2025-09-27</div>
-        <div class="title">
-          <a href="/2025/09/27/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E6%A6%82%E8%AE%BA/">
-            
-              
-                <span>学习笔记</span>
-              
-            
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="域认证协议Kerberos">
-        <div class="time-m-d">2025-08-08</div>
-        <div class="title">
-          <a href="/2025/08/08/%E5%9F%9F%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/">
-            
-              
-                <span>域认证协议Kerberos</span>
-              
-            
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="红日靶场2">
-        <div class="time-m-d">2025-08-04</div>
-        <div class="title">
-          <a href="/2025/08/04/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA2/">
-            
-              
-                <span>红日靶场2</span>
-              
-            
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="PolarCTF 2025春季挑战赛">
-        <div class="time-m-d">2025-06-07</div>
-        <div class="title">
-          <a href="/2025/06/07/wp/">
-            
-              
-                <span>PolarCTF 2025春季挑战赛</span>
-              
-            
-          </a>
-        </div>
-      </div>
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%87%E7%A8%8B%E5%A4%8D%E7%8E%B0"><span class="toc-text">过程复现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E6%9E%90"><span class="toc-text">分析</span></a></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
     
   </div>
-  <nav class="post-navigation">
-    
-    <span class="page-num">1 / 3</span>
-    
-      <a href="/page/2/"><i class="iconfont icon-angleright"></i></a>
-    
-  </nav>
-</div>
+
 
         
 <div class="footer">
