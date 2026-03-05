@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="hi-story" />
+  <!-- Open Graph Description 简短摘要-->
+  
+  <!-- 用于搜索引擎的文章摘要 -->
+  
+  <meta name="description" content="the way, the truth, the life" />
+  
+  
+  
+  <title>
+    
+     hi-story&#39;s blog
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+    
+<link rel="stylesheet" href="/css/figcaption/mac-block.css">
+
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">hi-story</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          <a href="/categories/">Categories</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title"></div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2026-03-05 00:00:00
+        </span>
+        
+              <span class="post-categories">
+                <i class="iconfont icon-bookmark" title="分类"></i>
+                
+                <span class="span--category">
+                  <a href="/categories/%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/" title="日志分析">
+                    <b>#</b> 日志分析
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h1 id="ssh日志分析"><a href="#ssh日志分析" class="headerlink" title="ssh日志分析"></a>ssh日志分析</h1><h2 id="一、可以登录-SSH-的账号数量"><a href="#一、可以登录-SSH-的账号数量" class="headerlink" title="一、可以登录 SSH 的账号数量"></a>一、可以登录 SSH 的账号数量</h2><p>查看ssh配置文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/ssh/sshd_config </span><br></pre></td></tr></table></figure>
+
+<p><img src="/2026/03/05/ssh%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/image-20260305100405657.png" alt="image-20260305100405657"></p>
+<p>允许登录的组是<code>SSHD_USER</code>和<code>root</code>，然后查看组的用户</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/group</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2026/03/05/ssh%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/image-20260305100703244.png" alt="image-20260305100703244"></p>
+<p>可以看到有两个用户，一个是<code>toor</code>，一个是<code>root</code></p>
+<h2 id="二、SSH日志中登录成功的日志条数"><a href="#二、SSH日志中登录成功的日志条数" class="headerlink" title="二、SSH日志中登录成功的日志条数"></a>二、SSH日志中登录成功的日志条数</h2><p>ssh日志文件路径<code>/var/log</code></p>
+<p><img src="/2026/03/05/ssh%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/image-20260305102415229.png" alt="image-20260305102415229"></p>
+<p>解压<code>gzip -d auth.log.2.gz</code></p>
+<p>查看日志文件内容，筛选成功的用户</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep &quot;Accept&quot; auth.log auth.log.1 auth.log.2 | wc -l</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2026/03/05/ssh%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/image-20260305102610290.png" alt="image-20260305102610290"></p>
+<h2 id="三、登录次数最多的用户"><a href="#三、登录次数最多的用户" class="headerlink" title="三、登录次数最多的用户"></a>三、登录次数最多的用户</h2><p>加一个筛选</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep &quot;Accepted&quot; auth.log.1 auth.log.2 | awk &#x27;&#123;print $9&#125;&#x27; | sort | uniq -c | sort -nr</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2026/03/05/ssh%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/image-20260305102806450.png" alt="image-20260305102806450"></p>
+<h2 id="四、SSH日志中登录失败次数最多的用户以及登录使用的ip是什么"><a href="#四、SSH日志中登录失败次数最多的用户以及登录使用的ip是什么" class="headerlink" title="四、SSH日志中登录失败次数最多的用户以及登录使用的ip是什么"></a>四、SSH日志中登录失败次数最多的用户以及登录使用的ip是什么</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grep &quot;Failed&quot; auth.log auth.log.1 auth.log.2 | awk &#x27;&#123;print $9,$11&#125;&#x27; | sort | uniq </span><br><span class="line">-c | sort -nr</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2026/03/05/ssh%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/image-20260305103147378.png" alt="image-20260305103147378"></p>
+<hr>
+<h2 id="相关分析"><a href="#相关分析" class="headerlink" title="相关分析"></a>相关分析</h2><h3 id="ssh日志常见路径"><a href="#ssh日志常见路径" class="headerlink" title="ssh日志常见路径"></a>ssh日志常见路径</h3><table>
+<thead>
+<tr>
+<th>操作系统</th>
+<th>路径</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Debian &#x2F; Ubuntu &#x2F; Kali</td>
+<td>&#x2F;var&#x2F;log&#x2F;auth.log</td>
+<td></td>
+</tr>
+<tr>
+<td>CentOS &#x2F; RHEL &#x2F; Rocky &#x2F; AlmaLinux</td>
+<td>&#x2F;var&#x2F;log&#x2F;secure</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="ssh日志的片段"><a href="#ssh日志的片段" class="headerlink" title="ssh日志的片段"></a>ssh日志的片段</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Apr 14 23:17:01 debian CRON[478]: pam_unix(cron:session): session opened for user root by (uid=0)</span><br><span class="line">Apr 14 23:17:01 debian CRON[478]: pam_unix(cron:session): session closed for user root</span><br><span class="line">Apr 15 00:17:01 debian CRON[604]: pam_unix(cron:session): session opened for user root by (uid=0)</span><br><span class="line">Apr 15 04:29:14 debian login[426]: pam_unix(login:session): session opened for user root by LOGIN(uid=0)</span><br><span class="line">Apr 15 04:29:14 debian systemd-logind[403]: New session 5 of user root.</span><br><span class="line">Apr 15 04:29:15 debian systemd: pam_unix(systemd-user:session): session opened for user root by (uid=0)</span><br><span class="line">Apr 15 04:36:52 debian sshd[877]: Failed password for root from 192.168.11.4 port 53883 ssh2</span><br><span class="line">Apr 15 04:29:16 debian login[733]: ROOT LOGIN  on &#x27;/dev/tty1&#x27;</span><br><span class="line">Apr 15 04:30:16 debian sshd[739]: Accepted password for root from 192.168.11.1 port 59169 ssh2</span><br><span class="line">Apr 18 04:57:59 ip-172-31-35-213 sudo: pam_unix(sudo:session): session closed for user root</span><br><span class="line">Apr 18 04:59:06 ip-172-31-35-213 sshd[522]: Received signal 15; terminating.</span><br><span class="line">Mar  4 21:22:44 ip-10-0-10-1 passwd[456]: password for &#x27;debian&#x27; changed by &#x27;root&#x27;</span><br><span class="line">Mar  4 21:22:44 ip-10-0-10-1 systemd-logind[465]: New seat seat0.</span><br><span class="line">Mar  4 21:22:44 ip-10-0-10-1 systemd-logind[465]: Watching system buttons on /dev/input/event2 (Power Button)</span><br><span class="line">Mar  4 21:22:44 ip-10-0-10-1 systemd-logind[465]: Watching system buttons on /dev/input/event3 (Sleep Button)</span><br><span class="line">Mar  4 21:22:44 ip-10-0-10-1 systemd-logind[465]: Watching system buttons on /dev/input/event0 (AT Translated Set 2 keyboard)</span><br><span class="line">Mar  4 21:22:44 ip-10-0-10-1 sshd[485]: Server listening on 0.0.0.0 port 222.</span><br><span class="line">Mar  4 21:22:44 ip-10-0-10-1 sshd[485]: Server listening on :: port 222.</span><br></pre></td></tr></table></figure>
+
+<h3 id="登录成功示例"><a href="#登录成功示例" class="headerlink" title="登录成功示例"></a>登录成功示例</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Apr 15 04:30:16 debian sshd[739]: Accepted password for root from 192.168.11.1 port 59169 ssh2</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Accepted password</td>
+<td>密码认证成功</td>
+</tr>
+<tr>
+<td>root</td>
+<td>登录用户</td>
+</tr>
+<tr>
+<td>192.168.11.1</td>
+<td>登录 IP</td>
+</tr>
+<tr>
+<td>port 59169</td>
+<td>客户端端口</td>
+</tr>
+<tr>
+<td>ssh2</td>
+<td>SSH 协议版本</td>
+</tr>
+</tbody></table>
+<h3 id="登录失败示例"><a href="#登录失败示例" class="headerlink" title="登录失败示例"></a>登录失败示例</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Apr 15 04:36:52 debian sshd[877]: Failed password for root from 192.168.11.4 port 53883 ssh2</span><br></pre></td></tr></table></figure>
+
+<p>表示：</p>
+<ul>
+<li>登录失败</li>
+<li>可能是密码错误</li>
+<li>也可能是暴力破解</li>
+</ul>
+<h3 id="使用grep统计登录情况"><a href="#使用grep统计登录情况" class="headerlink" title="使用grep统计登录情况"></a>使用grep统计登录情况</h3><h4 id="统计失败次数"><a href="#统计失败次数" class="headerlink" title="统计失败次数"></a>统计失败次数</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep &quot;Failed password&quot; /var/log/auth.log | wc -l</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看登录失败的用户名和-IP"><a href="#查看登录失败的用户名和-IP" class="headerlink" title="查看登录失败的用户名和 IP"></a>查看登录失败的用户名和 IP</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep &quot;Failed password&quot; /var/log/auth.log | awk &#x27;&#123;print $9,$11&#125;&#x27; | sort | uniq -c | sort -nr</span><br></pre></td></tr></table></figure>
+
+<h4 id="统计成功登录的用户名和-IP"><a href="#统计成功登录的用户名和-IP" class="headerlink" title="统计成功登录的用户名和 IP"></a>统计成功登录的用户名和 IP</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep &quot;Accepted&quot; auth.log.1 auth.log.2 | awk &#x27;&#123;print $9,$11&#125;&#x27; | sort | uniq -c | sort -nr</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看登录历史"><a href="#查看登录历史" class="headerlink" title="查看登录历史"></a>查看登录历史</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">last</span><br></pre></td></tr></table></figure>
+
+<p>输出示例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root pts/0 192.168.1.10 Tue Mar 5 10:00 still logged in</span><br></pre></td></tr></table></figure>
+
+<h4 id="某一用户的爆破"><a href="#某一用户的爆破" class="headerlink" title="某一用户的爆破"></a>某一用户的爆破</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep &quot;Failed password&quot; /var/log/auth.log | grep root</span><br></pre></td></tr></table></figure>
+
+<h2 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">RED=<span class="string">&#x27;\033[0;31m&#x27;</span></span><br><span class="line">GREEN=<span class="string">&#x27;\033[0;32m&#x27;</span></span><br><span class="line">YELLOW=<span class="string">&#x27;\033[1;33m&#x27;</span></span><br><span class="line">BLUE=<span class="string">&#x27;\033[0;34m&#x27;</span></span><br><span class="line">NC=<span class="string">&#x27;\033[0m&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># --------------------</span></span><br><span class="line"><span class="function"><span class="title">detect_log</span></span>() &#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [[ -f /var/log/auth.log ]]; <span class="keyword">then</span></span><br><span class="line">BASE_LOG=<span class="string">&quot;/var/log/auth.log&quot;</span></span><br><span class="line"><span class="keyword">elif</span> [[ -f /var/log/secure ]]; <span class="keyword">then</span></span><br><span class="line">BASE_LOG=<span class="string">&quot;/var/log/secure&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;No SSH log found&quot;</span></span><br><span class="line"><span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">LOG_LIST=($(<span class="built_in">ls</span> <span class="variable">$&#123;BASE_LOG&#125;</span>* 2&gt;/dev/null))</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># --------------------</span></span><br><span class="line"><span class="function"><span class="title">print_header</span></span>()&#123;</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;\n<span class="variable">$&#123;BLUE&#125;</span>================================================================<span class="variable">$&#123;NC&#125;</span>&quot;</span></span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;<span class="variable">$&#123;BLUE&#125;</span> $1<span class="variable">$&#123;NC&#125;</span>&quot;</span></span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;<span class="variable">$&#123;BLUE&#125;</span>================================================================<span class="variable">$&#123;NC&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># --------------------</span></span><br><span class="line"><span class="function"><span class="title">read_logs</span></span>()&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> file <span class="keyword">in</span> <span class="string">&quot;<span class="variable">$&#123;LOG_LIST[@]&#125;</span>&quot;</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line"><span class="keyword">if</span> [[ <span class="string">&quot;<span class="variable">$file</span>&quot;</span> == *.gz ]]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">zcat <span class="string">&quot;<span class="variable">$file</span>&quot;</span> 2&gt;/dev/null</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line"><span class="built_in">cat</span> <span class="string">&quot;<span class="variable">$file</span>&quot;</span> 2&gt;/dev/null</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># --------------------</span></span><br><span class="line"><span class="function"><span class="title">summary</span></span>()&#123;</span><br><span class="line"></span><br><span class="line">print_header <span class="string">&quot;SSH Security Summary&quot;</span></span><br><span class="line"></span><br><span class="line">success=$(read_logs | grep -c <span class="string">&quot;Accepted&quot;</span>)</span><br><span class="line">failed=$(read_logs | grep -c <span class="string">&quot;Failed password&quot;</span>)</span><br><span class="line">invalid=$(read_logs | grep -c <span class="string">&quot;Invalid user&quot;</span>)</span><br><span class="line"></span><br><span class="line">unique_ips=$(read_logs |</span><br><span class="line">grep -oE <span class="string">&quot;\b([0-9]&#123;1,3&#125;\.)&#123;3&#125;[0-9]&#123;1,3&#125;\b&quot;</span> |</span><br><span class="line"><span class="built_in">sort</span> -u | <span class="built_in">wc</span> -l)</span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span> <span class="string">&quot;%-30s : %s\n&quot;</span> <span class="string">&quot;Logs analyzed&quot;</span> <span class="string">&quot;<span class="variable">$&#123;LOG_LIST[*]&#125;</span>&quot;</span></span><br><span class="line"><span class="built_in">printf</span> <span class="string">&quot;%-30s : <span class="variable">$&#123;GREEN&#125;</span>%s<span class="variable">$&#123;NC&#125;</span>\n&quot;</span> <span class="string">&quot;Successful logins&quot;</span> <span class="string">&quot;<span class="variable">$success</span>&quot;</span></span><br><span class="line"><span class="built_in">printf</span> <span class="string">&quot;%-30s : <span class="variable">$&#123;RED&#125;</span>%s<span class="variable">$&#123;NC&#125;</span>\n&quot;</span> <span class="string">&quot;Failed logins&quot;</span> <span class="string">&quot;<span class="variable">$failed</span>&quot;</span></span><br><span class="line"><span class="built_in">printf</span> <span class="string">&quot;%-30s : <span class="variable">$&#123;YELLOW&#125;</span>%s<span class="variable">$&#123;NC&#125;</span>\n&quot;</span> <span class="string">&quot;Invalid users&quot;</span> <span class="string">&quot;<span class="variable">$invalid</span>&quot;</span></span><br><span class="line"><span class="built_in">printf</span> <span class="string">&quot;%-30s : %s\n&quot;</span> <span class="string">&quot;Unique IPs&quot;</span> <span class="string">&quot;<span class="variable">$unique_ips</span>&quot;</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># --------------------</span></span><br><span class="line"><span class="function"><span class="title">top_failed_ip</span></span>()&#123;</span><br><span class="line"></span><br><span class="line">print_header <span class="string">&quot;Top Failed IP (with usernames)&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span> <span class="string">&quot;%-10s | %-20s | %-20s\n&quot;</span> <span class="string">&quot;Attempts&quot;</span> <span class="string">&quot;IP&quot;</span> <span class="string">&quot;Usernames&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;-----------|----------------------|----------------------&quot;</span></span><br><span class="line"></span><br><span class="line">read_logs |</span><br><span class="line">grep <span class="string">&quot;Failed password&quot;</span> |</span><br><span class="line">awk <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">if ($9==&quot;invalid&quot;)&#123;user=$11; ip=$13&#125;</span></span><br><span class="line"><span class="string">else&#123;user=$9; ip=$11&#125;</span></span><br><span class="line"><span class="string">print ip,user</span></span><br><span class="line"><span class="string">&#125;&#x27;</span> |</span><br><span class="line"><span class="built_in">sort</span> |</span><br><span class="line"><span class="built_in">uniq</span> -c |</span><br><span class="line"><span class="built_in">sort</span> -nr |</span><br><span class="line"><span class="built_in">head</span> -10 |</span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> count ip user</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line"><span class="built_in">printf</span> <span class="string">&quot;%-10s | %-20s | %-20s\n&quot;</span> <span class="string">&quot;<span class="variable">$count</span>&quot;</span> <span class="string">&quot;<span class="variable">$ip</span>&quot;</span> <span class="string">&quot;<span class="variable">$user</span>&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># --------------------</span></span><br><span class="line"><span class="function"><span class="title">top_failed_users</span></span>()&#123;</span><br><span class="line"></span><br><span class="line">print_header <span class="string">&quot;Top Failed Username (with IP)&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span> <span class="string">&quot;%-10s | %-20s | %-20s\n&quot;</span> <span class="string">&quot;Attempts&quot;</span> <span class="string">&quot;Username&quot;</span> <span class="string">&quot;IP&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;-----------|----------------------|----------------------&quot;</span></span><br><span class="line"></span><br><span class="line">read_logs |</span><br><span class="line">grep <span class="string">&quot;Failed password&quot;</span> |</span><br><span class="line">awk <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">if ($9==&quot;invalid&quot;)&#123;user=$11; ip=$13&#125;</span></span><br><span class="line"><span class="string">else&#123;user=$9; ip=$11&#125;</span></span><br><span class="line"><span class="string">print user,ip</span></span><br><span class="line"><span class="string">&#125;&#x27;</span> |</span><br><span class="line"><span class="built_in">sort</span> |</span><br><span class="line"><span class="built_in">uniq</span> -c |</span><br><span class="line"><span class="built_in">sort</span> -nr |</span><br><span class="line"><span class="built_in">head</span> -10 |</span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> count user ip</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line"><span class="built_in">printf</span> <span class="string">&quot;%-10s | %-20s | %-20s\n&quot;</span> <span class="string">&quot;<span class="variable">$count</span>&quot;</span> <span class="string">&quot;<span class="variable">$user</span>&quot;</span> <span class="string">&quot;<span class="variable">$ip</span>&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># --------------------</span></span><br><span class="line"><span class="function"><span class="title">successful_logins</span></span>()&#123;</span><br><span class="line"></span><br><span class="line">print_header <span class="string">&quot;Top Successful Login (User + IP)&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span> <span class="string">&quot;%-10s | %-20s | %-20s\n&quot;</span> <span class="string">&quot;Count&quot;</span> <span class="string">&quot;User&quot;</span> <span class="string">&quot;IP&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;-----------|----------------------|----------------------&quot;</span></span><br><span class="line"></span><br><span class="line">read_logs |</span><br><span class="line">grep <span class="string">&quot;Accepted&quot;</span> |</span><br><span class="line">awk <span class="string">&#x27;&#123;print $9,$11&#125;&#x27;</span> |</span><br><span class="line"><span class="built_in">sort</span> |</span><br><span class="line"><span class="built_in">uniq</span> -c |</span><br><span class="line"><span class="built_in">sort</span> -nr |</span><br><span class="line"><span class="built_in">head</span> -10 |</span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> count user ip</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line"><span class="built_in">printf</span> <span class="string">&quot;%-10s | %-20s | %-20s\n&quot;</span> <span class="string">&quot;<span class="variable">$count</span>&quot;</span> <span class="string">&quot;<span class="variable">$user</span>&quot;</span> <span class="string">&quot;<span class="variable">$ip</span>&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># --------------------</span></span><br><span class="line"><span class="function"><span class="title">bruteforce_detection</span></span>()&#123;</span><br><span class="line"></span><br><span class="line">print_header <span class="string">&quot;Potential Brute Force Attack (IP + User)&quot;</span></span><br><span class="line"></span><br><span class="line">threshold=10</span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span> <span class="string">&quot;%-10s | %-20s | %-20s\n&quot;</span> <span class="string">&quot;Attempts&quot;</span> <span class="string">&quot;IP&quot;</span> <span class="string">&quot;User&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;-----------|----------------------|----------------------&quot;</span></span><br><span class="line"></span><br><span class="line">read_logs |</span><br><span class="line">grep <span class="string">&quot;Failed password&quot;</span> |</span><br><span class="line">awk <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">if ($9==&quot;invalid&quot;)&#123;user=$11; ip=$13&#125;</span></span><br><span class="line"><span class="string">else&#123;user=$9; ip=$11&#125;</span></span><br><span class="line"><span class="string">print ip,user</span></span><br><span class="line"><span class="string">&#125;&#x27;</span> |</span><br><span class="line"><span class="built_in">sort</span> |</span><br><span class="line"><span class="built_in">uniq</span> -c |</span><br><span class="line"><span class="built_in">sort</span> -nr |</span><br><span class="line">awk -v t=<span class="variable">$threshold</span> <span class="string">&#x27;$1&gt;t &#123;printf &quot;%-10s | %-20s | %-20s\n&quot;,$1,$2,$3&#125;&#x27;</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># --------------------</span></span><br><span class="line"><span class="function"><span class="title">hourly_activity</span></span>()&#123;</span><br><span class="line"></span><br><span class="line">print_header <span class="string">&quot;Login Attempts by Hour&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span> <span class="string">&quot;%-10s | %-10s\n&quot;</span> <span class="string">&quot;Hour&quot;</span> <span class="string">&quot;Attempts&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;-----------|----------------&quot;</span></span><br><span class="line"></span><br><span class="line">read_logs |</span><br><span class="line">grep -E <span class="string">&quot;Accepted|Failed password&quot;</span> |</span><br><span class="line">awk <span class="string">&#x27;&#123;print $3&#125;&#x27;</span> |</span><br><span class="line"><span class="built_in">cut</span> -d: -f1 |</span><br><span class="line"><span class="built_in">sort</span> |</span><br><span class="line"><span class="built_in">uniq</span> -c |</span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> count hour</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line"></span><br><span class="line">bar=$(<span class="built_in">printf</span> <span class="string">&quot;%<span class="variable">$&#123;count&#125;</span>s&quot;</span> | <span class="built_in">tr</span> <span class="string">&#x27; &#x27;</span> <span class="string">&#x27;#&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$&#123;#bar&#125;</span> -gt 40 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">bar=<span class="string">&quot;<span class="variable">$&#123;bar:0:40&#125;</span>&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span> <span class="string">&quot;%-10s | %-5s %s\n&quot;</span> <span class="string">&quot;<span class="variable">$hour</span>:00&quot;</span> <span class="string">&quot;<span class="variable">$count</span>&quot;</span> <span class="string">&quot;<span class="variable">$bar</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># -------------------</span></span><br><span class="line"><span class="function"><span class="title">recent_activity</span></span>()&#123;</span><br><span class="line"></span><br><span class="line">print_header <span class="string">&quot;Recent SSH Activity&quot;</span></span><br><span class="line"></span><br><span class="line">read_logs |</span><br><span class="line">grep -E <span class="string">&quot;Accepted|Failed|Invalid&quot;</span> |</span><br><span class="line"><span class="built_in">tail</span> -10 |</span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> line</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$line</span>&quot;</span> | grep -q <span class="string">&quot;Accepted&quot;</span></span><br><span class="line"><span class="keyword">then</span></span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;<span class="variable">$&#123;GREEN&#125;</span>[SUCCESS]<span class="variable">$&#123;NC&#125;</span> <span class="variable">$line</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">elif</span> <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$line</span>&quot;</span> | grep -q <span class="string">&quot;Failed&quot;</span></span><br><span class="line"><span class="keyword">then</span></span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;<span class="variable">$&#123;RED&#125;</span>[FAILED]<span class="variable">$&#123;NC&#125;</span>  <span class="variable">$line</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;<span class="variable">$&#123;YELLOW&#125;</span>[INVALID]<span class="variable">$&#123;NC&#125;</span> <span class="variable">$line</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># --------------------</span></span><br><span class="line"></span><br><span class="line">detect_log</span><br><span class="line"></span><br><span class="line">summary</span><br><span class="line">top_failed_ip</span><br><span class="line">top_failed_users</span><br><span class="line">successful_logins</span><br><span class="line">bruteforce_detection</span><br><span class="line">hourly_activity</span><br><span class="line">recent_activity</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;\n<span class="variable">$&#123;GREEN&#125;</span>SSH Audit Completed.<span class="variable">$&#123;NC&#125;</span>\n&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2026/03/04/xxe/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2026-03-05 00:00:00
+            </span>
+            
+                  <span class="post-categories">
+                    <i class="iconfont icon-bookmark" title="分类"></i>
+                    
+                    <span class="span--category">
+                      <a href="/categories/%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/" title="日志分析">
+                        <b>#</b> 日志分析
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ssh%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90"><span class="toc-text">ssh日志分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%8F%AF%E4%BB%A5%E7%99%BB%E5%BD%95-SSH-%E7%9A%84%E8%B4%A6%E5%8F%B7%E6%95%B0%E9%87%8F"><span class="toc-text">一、可以登录 SSH 的账号数量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81SSH%E6%97%A5%E5%BF%97%E4%B8%AD%E7%99%BB%E5%BD%95%E6%88%90%E5%8A%9F%E7%9A%84%E6%97%A5%E5%BF%97%E6%9D%A1%E6%95%B0"><span class="toc-text">二、SSH日志中登录成功的日志条数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%99%BB%E5%BD%95%E6%AC%A1%E6%95%B0%E6%9C%80%E5%A4%9A%E7%9A%84%E7%94%A8%E6%88%B7"><span class="toc-text">三、登录次数最多的用户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81SSH%E6%97%A5%E5%BF%97%E4%B8%AD%E7%99%BB%E5%BD%95%E5%A4%B1%E8%B4%A5%E6%AC%A1%E6%95%B0%E6%9C%80%E5%A4%9A%E7%9A%84%E7%94%A8%E6%88%B7%E4%BB%A5%E5%8F%8A%E7%99%BB%E5%BD%95%E4%BD%BF%E7%94%A8%E7%9A%84ip%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-text">四、SSH日志中登录失败次数最多的用户以及登录使用的ip是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E5%88%86%E6%9E%90"><span class="toc-text">相关分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ssh%E6%97%A5%E5%BF%97%E5%B8%B8%E8%A7%81%E8%B7%AF%E5%BE%84"><span class="toc-text">ssh日志常见路径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ssh%E6%97%A5%E5%BF%97%E7%9A%84%E7%89%87%E6%AE%B5"><span class="toc-text">ssh日志的片段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%99%BB%E5%BD%95%E6%88%90%E5%8A%9F%E7%A4%BA%E4%BE%8B"><span class="toc-text">登录成功示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%99%BB%E5%BD%95%E5%A4%B1%E8%B4%A5%E7%A4%BA%E4%BE%8B"><span class="toc-text">登录失败示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8grep%E7%BB%9F%E8%AE%A1%E7%99%BB%E5%BD%95%E6%83%85%E5%86%B5"><span class="toc-text">使用grep统计登录情况</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%9F%E8%AE%A1%E5%A4%B1%E8%B4%A5%E6%AC%A1%E6%95%B0"><span class="toc-text">统计失败次数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%99%BB%E5%BD%95%E5%A4%B1%E8%B4%A5%E7%9A%84%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C-IP"><span class="toc-text">查看登录失败的用户名和 IP</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%9F%E8%AE%A1%E6%88%90%E5%8A%9F%E7%99%BB%E5%BD%95%E7%9A%84%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C-IP"><span class="toc-text">统计成功登录的用户名和 IP</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%99%BB%E5%BD%95%E5%8E%86%E5%8F%B2"><span class="toc-text">查看登录历史</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%90%E4%B8%80%E7%94%A8%E6%88%B7%E7%9A%84%E7%88%86%E7%A0%B4"><span class="toc-text">某一用户的爆破</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%84%9A%E6%9C%AC"><span class="toc-text">脚本</span></a></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://blog.y1fan.work/">Copyright © 2026 hi-story</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Thanks to Oranges</a>
+        
+    </div>
+  
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+
+      </div>
+    </div>
+  </body>
+</html>
