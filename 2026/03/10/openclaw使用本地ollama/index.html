@@ -15,7 +15,7 @@
   
   <title>
     
-      Linux(kali) 部署 OpenClaw 
+      OpenClaw 使用本地 Ollama 调用 qwen3 大模型 
       
       
       |
@@ -155,11 +155,11 @@
   <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
   <div class="container post-details" id="post-details">
     <div class="post-content">
-      <div class="post-title">Linux(kali) 部署 OpenClaw</div>
+      <div class="post-title">OpenClaw 使用本地 Ollama 调用 qwen3 大模型</div>
       <div class="post-attach">
         <span class="post-pubtime">
           <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-          2026-03-09 00:00:00
+          2026-03-10 00:00:00
         </span>
         
               <span class="post-categories">
@@ -181,72 +181,56 @@
           
       </div>
       <div class="markdown-body">
-        <h2 id="Linux-kali-部署-OpenClaw"><a href="#Linux-kali-部署-OpenClaw" class="headerlink" title="Linux(kali) 部署 OpenClaw"></a>Linux(kali) 部署 OpenClaw</h2><p><a target="_blank" rel="noopener" href="https://openclaw.ai/">官网</a></p>
-<p>主机 MacOS m1</p>
-<p>虚拟机 Kali 2025-04</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Linux kali 6.16.8+kali-arm64 #1 SMP PREEMPT Kali 6.16.8-1kali1 (2025-09-24) aarch64 GNU/Linux</span><br></pre></td></tr></table></figure>
+        <h2 id="OpenClaw使用本地Ollama调用qwen3大模型"><a href="#OpenClaw使用本地Ollama调用qwen3大模型" class="headerlink" title="OpenClaw使用本地Ollama调用qwen3大模型"></a>OpenClaw使用本地Ollama调用qwen3大模型</h2><p>这次依旧是虚拟机(Linux)运行OpenClaw server，然后物理机运行Ollama，本地模型使用qwen3:30b</p>
+<p>虚拟机：<code>Linux kali 6.16.8+kali-arm64</code></p>
+<p>物理机：<code>Darwin bogon 25.3.0 Darwin Kernel Version 25.3.0</code></p>
+<h3 id="Ollama安装"><a href="#Ollama安装" class="headerlink" title="Ollama安装"></a>Ollama安装</h3><p><a target="_blank" rel="noopener" href="https://ollama.com/">Ollama官网</a></p>
+<p>官网给了一个直接Ollama加载OpenClaw的方法，但是在安装ollama的本地检测是否部署了openclaw，然后启动，这里因为openclaw和ollama不在同一台机器上，所以不用这种方法。</p>
+<p><img src="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/image-20260310090617567.png" alt="image-20260310090617567"></p>
+<p>安装好后下载模型，我这里用的是qwen3:30b，因为本地模型肯定是不如在线模型好，尽量选参数量大一点的</p>
+<p><img src="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/image-20260310090721696.png" alt="image-20260310090721696"></p>
+<p>然后设置里面打开网络访问，OpenClaw要求模型<strong>上下文窗口≥16000 tokens</strong>，而Ollama拉取的基础模型默认上下文窗口仅4096 tokens，所以需要将上下文窗口扩展至32768 tokens</p>
+<p><img src="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/image-20260310092251000.png" alt="image-20260310092251000"></p>
+<h3 id="OpenClaw配置"><a href="#OpenClaw配置" class="headerlink" title="OpenClaw配置"></a>OpenClaw配置</h3><p>OpenClaw 需要一个<code>API Key</code>来识别 Ollama 服务。由于 Ollama 是本地服务，所以这个 Key 可以是任意字符串</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openclaw config set models.providers.ollama.apiKey &quot;ollama-local&quot;</span><br></pre></td></tr></table></figure>
 
-<h3 id="一、命令行安装"><a href="#一、命令行安装" class="headerlink" title="一、命令行安装"></a>一、命令行安装</h3><p>官网一键安装脚本<code>curl -sSL https://openclaw.ai/install.sh | bash</code></p>
-<p><img src="/2026/03/09/openclaw/image-20260309143627168.png" alt="image-20260309143627168"></p>
-<h3 id="二、进入安装向导"><a href="#二、进入安装向导" class="headerlink" title="二、进入安装向导"></a>二、进入安装向导</h3><p>进入安装向导</p>
-<p><img src="/2026/03/09/openclaw/image-20260309144857281.png" alt="image-20260309144857281"></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">◆  I understand this is personal-by-default and shared/multi-user use requires lock-down. </span><br><span class="line">Continue?                                                                                  </span><br><span class="line">│  ● Yes / ○ No</span><br></pre></td></tr></table></figure>
+<p>官方文档给出了，当ollama和openclaw部署在同一个服务器上的时候，设置了<code>OLLAMA_API_KEY</code>就可以自动识别到并且加载到openclaw里，这里没有在同一台机器上部署，所以需要手动添加</p>
+<p>官网给了配置文件当中的一段</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  models: &#123;</span><br><span class="line">    providers: &#123;</span><br><span class="line">      ollama: &#123;</span><br><span class="line">        // 使用包含 /v1 的主机地址以兼容 OpenAI API</span><br><span class="line">        baseUrl: &quot;http://ollama-host:11434/v1&quot;,</span><br><span class="line">        apiKey: &quot;ollama-local&quot;,</span><br><span class="line">        api: &quot;openai-completions&quot;,</span><br><span class="line">        models: [</span><br><span class="line">          &#123;</span><br><span class="line">            id: &quot;llama3.3&quot;,</span><br><span class="line">            name: &quot;Llama 3.3&quot;,</span><br><span class="line">            reasoning: false,</span><br><span class="line">            input: [&quot;text&quot;],</span><br><span class="line">            cost: &#123; input: 0, output: 0, cacheRead: 0, cacheWrite: 0 &#125;,</span><br><span class="line">            contextWindow: 8192,</span><br><span class="line">            maxTokens: 8192 * 10</span><br><span class="line">          &#125;</span><br><span class="line">        ]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>第一步默认个人使用，选<code>Yes</code></p>
-<p><img src="/2026/03/09/openclaw/image-20260309145309402.png" alt="image-20260309145309402"></p>
-<p>类似于安装模型吧，选<code>Manual</code></p>
-<p><img src="/2026/03/09/openclaw/image-20260309145352783.png" alt="image-20260309145352783"></p>
-<p>本地测试的话就选<code>Local gateway</code></p>
-<p><img src="/2026/03/09/openclaw/image-20260309145501541.png" alt="image-20260309145501541"></p>
-<p>一个默认的工作空间</p>
-<p><img src="/2026/03/09/openclaw/image-20260309150134516.png" alt="image-20260309150134516"></p>
-<p>我这里选择了千问大模型，然后浏览器弹出了千问官网</p>
-<p><img src="/2026/03/09/openclaw/image-20260309150224075.png" alt="image-20260309150224075"></p>
-<p>登录认证后回到命令行，选择第一个</p>
-<p><img src="/2026/03/09/openclaw/image-20260309150551636.png" alt="image-20260309150551636"></p>
-<p>设置网关端口，这里先用默认的<code>18789</code>（安全起见后期自己修改自定义）</p>
-<p><img src="/2026/03/09/openclaw/image-20260309150756265.png" alt="image-20260309150756265"></p>
-<p>类似于网卡的绑定，如果只在本地测试，就选<code>127</code>这个，如果想用其他设备访问就选<code>0.0.0.0</code>，然后是网关认证方式，选<code>Token</code>就行</p>
-<p><img src="/2026/03/09/openclaw/image-20260309151213537.png" alt="image-20260309151213537"></p>
-<p>Tailscale exposure，一个远程访问的方式[<a target="_blank" rel="noopener" href="https://lzw.me/docs/opencodedocs/zh/openclaw/openclaw/advanced/tailscale-remote/">Tailscale 是一个基于 WireGuard 的零配置VPN解决方案，让你可以安全地从任何地方访问 OpenClaw Gateway。</a>]，默认选<code>Off</code>就行</p>
-<p><img src="/2026/03/09/openclaw/image-20260309151256621.png" alt="image-20260309151256621"></p>
-<p>生成token的方式，这个默认就可以，然后默认空值就自动生成</p>
-<p><img src="/2026/03/09/openclaw/image-20260309151747440.png" alt="image-20260309151747440"></p>
-<p>然后是选择要不要跟一些社交软件联动，这里先选择<code>No</code>，后续有需要可以再修改</p>
-<p><img src="/2026/03/09/openclaw/image-20260309151852988.png" alt="image-20260309151852988"></p>
-<p>是否让大模型联网搜索，这里暂时先跳过</p>
-<p><img src="/2026/03/09/openclaw/image-20260309152309377.png" alt="image-20260309152309377"></p>
-<p>接下来是选择配置一些技能，也可以先跳过</p>
-<p><img src="/2026/03/09/openclaw/image-20260309152355860.png" alt="image-20260309152355860"></p>
-<p>下一步是否需要激活一些hooks，类似于自动的脚本，一样先选择跳过，这里是多选，用空格键选择，然后回车确认</p>
-<p><img src="/2026/03/09/openclaw/image-20260309152502390.png" alt="image-20260309152502390"></p>
-<p>下一步还是默认，然后安装网关服务</p>
-<p><img src="/2026/03/09/openclaw/image-20260309152741701.png" alt="image-20260309152741701"></p>
-<p>下一步是否安装终端的一个工具，能够一键补全命令的</p>
-<p><img src="/2026/03/09/openclaw/image-20260309152859628.png" alt="image-20260309152859628"></p>
-<p>安装完后浏览器弹出界面</p>
-<p><img src="/2026/03/09/openclaw/image-20260309153020500.png" alt="image-20260309153020500"></p>
-<h3 id="三、Web界面"><a href="#三、Web界面" class="headerlink" title="三、Web界面"></a>三、Web界面</h3><p>接上一步，这里有一个报错提示</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">origin not allowed (open the Control UI from the gateway host or allow it in gateway.controlUi.allowedOrigins)</span><br></pre></td></tr></table></figure>
-
-<p>这里是因为之前绑定的<code>0.0.0.0</code>这个网卡，所以默认链接的是这个ip</p>
-<p><img src="/2026/03/09/openclaw/image-20260309154249296.png" alt="image-20260309154249296"></p>
-<p>这个报错需要修改 <code>openclaw.json</code> 中 <code>gateway</code> 内容，把这个ip添加到<code>controlUi</code>，然后重启 Gateway，<code>openclaw.json</code>的路径在<code>/root/.openclaw</code></p>
-<p><img src="/2026/03/09/openclaw/image-20260309153718845.png" alt="image-20260309153718845"></p>
-<p>然后重启<code>gateway</code>服务</p>
-<p><img src="/2026/03/09/openclaw/image-20260309153902451.png" alt="image-20260309153902451"></p>
-<p>就可以访问了</p>
-<p><img src="/2026/03/09/openclaw/image-20260309154437215.png" alt="image-20260309154437215"></p>
-<p>在物理机上访问一下试试<code>http://172.16.171.146:18789/#token=86f280493ccef46954d9705df65e136cc079ec86540f64b9</code></p>
-<p><img src="/2026/03/09/openclaw/image-20260309154623754.png" alt="image-20260309154623754"></p>
-<p>后续更新一些使用方法……</p>
+<p>其实有web界面，可以从web界面修改，打开web界面</p>
+<p><img src="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/image-20260310145411309.png" alt="image-20260310145411309"></p>
+<p><code>Settings</code>下面<code>Form</code>和<code>Raw</code>可以切换前端界面和原始的<code>json</code>格式，也就是<code>openclaw.json</code>文件里的内容格式，直接翻到<code>models</code>这一栏</p>
+<p><img src="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/image-20260310145709067.png" alt="image-20260310145709067"></p>
+<p>我个人理解的这个层级逻辑是：</p>
+<p><img src="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/image-20260310150908893.png" alt="image-20260310150908893"></p>
+<p>然后就是把json里的配置项和web界面当中的配置项对应起来。</p>
+<p>这里第一个内容就是第层的ollama的配置，<code>API Adapter</code>选择<code>openai-completions</code>，<code>API Key</code>就是前面配置的<code>ollama-local</code></p>
+<p><img src="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/image-20260310151136579.png" alt="image-20260310151136579"></p>
+<p>然后<code>Base URL</code>一定是运行ollama的服务器ip</p>
+<p><img src="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/image-20260310151505864.png" alt="image-20260310151505864"></p>
+<p>到这步第一层的配置就完成了，然后是第二层对ollama调用的模型进行配置，设置第一个模型，<code>Api</code>还是openai的，<code>Context Windows</code>设置为<code>32768</code>，这里openclaw对<code>Context Windows</code>限制了不能低于<code>16000</code>，然后<code>Cost</code>全部设置为<code>0</code>，因为是在本地运行的模型没有费用。</p>
+<p><img src="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/image-20260310151959234.png" alt="image-20260310151959234"></p>
+<p>最后是设置一个<code>Id</code>，然后<code>Input</code>选择<code>text</code>，因为暂时只用文本输入，<code>Max Token</code>也是<code>32768</code>，<code>Name</code>就和<code>Id</code>一样就行，编辑玩右上角<code>Save</code>。</p>
+<p><img src="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/image-20260310152456286.png" alt="image-20260310152456286"></p>
+<p>下一步对<code>Agent</code>进行设置，逻辑跟<code>Model</code>的差不多，就是需要通过json进行设置</p>
+<p><img src="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/image-20260310154406583.png" alt="image-20260310154406583"></p>
+<p>回到聊天，就可以使用了</p>
+<p><img src="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/image-20260310154849295.png" alt="image-20260310154849295"></p>
+<p>在<code>代理</code>–<code>Tools</code>这里可以设置智能体的工具，可以关闭一些不必要且危险的工具</p>
+<p><img src="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/image-20260310155044998.png" alt="image-20260310155044998"></p>
+<p><img src="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/image-20260310155439893.png" alt="image-20260310155439893"></p>
+<p>到这里就完成了基本的部署和设置，But……巨卡无比</p>
+<p><img src="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/image-20260310155228434.png" alt="image-20260310155228434"></p>
+<hr>
+<p><a target="_blank" rel="noopener" href="https://docs.openclaw.ai/zh-CN/providers/ollama">参考链接</a></p>
 
       </div>
       
         <div class="prev-or-next">
           <div class="post-foot-next">
             
-              <a href="/2026/03/05/ssh%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/" target="_self">
+              <a href="/2026/03/09/openclaw/" target="_self">
                 <i class="iconfont icon-chevronleft"></i>
                 <span>上一页</span>
               </a>
@@ -255,7 +239,7 @@
           <div class="post-attach">
             <span class="post-pubtime">
               <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-              2026-03-09 00:00:00
+              2026-03-10 00:00:00
             </span>
             
                   <span class="post-categories">
@@ -278,11 +262,6 @@
           </div>
           <div class="post-foot-prev">
             
-              <a href="/2026/03/10/openclaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0ollama/" target="_self">
-                <span>下一页</span>
-                <i class="iconfont icon-chevronright"></i>
-              </a>
-            
           </div>
         </div>
       
@@ -295,7 +274,7 @@
     <div class="title">目录</div>
     <div class="catalog-content">
       
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux-kali-%E9%83%A8%E7%BD%B2-OpenClaw"><span class="toc-text">Linux(kali) 部署 OpenClaw</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%AE%89%E8%A3%85"><span class="toc-text">一、命令行安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%BF%9B%E5%85%A5%E5%AE%89%E8%A3%85%E5%90%91%E5%AF%BC"><span class="toc-text">二、进入安装向导</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81Web%E7%95%8C%E9%9D%A2"><span class="toc-text">三、Web界面</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#OpenClaw%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0Ollama%E8%B0%83%E7%94%A8qwen3%E5%A4%A7%E6%A8%A1%E5%9E%8B"><span class="toc-text">OpenClaw使用本地Ollama调用qwen3大模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Ollama%E5%AE%89%E8%A3%85"><span class="toc-text">Ollama安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenClaw%E9%85%8D%E7%BD%AE"><span class="toc-text">OpenClaw配置</span></a></li></ol></li></ol>
       
     </div>
   </div>
